@@ -106,7 +106,7 @@ export default function Rates({ session }) {
                     {rates.map((service, index) => {
                         
                         const isBestRate = index === 0;
-                        const mintColor = '#79D8A0'; // The mint color
+                        const accentBlue = '#A6D1E6'; // Our new light blue
                         
                         // Base style for all buttons
                         const buttonStyle = {
@@ -119,11 +119,11 @@ export default function Rates({ session }) {
                             fontSize: '1em'
                         };
                         
-                        // If it's NOT the best rate, apply mint styles
+                        // If it's NOT the best rate, apply secondary styles
                         if (!isBestRate) {
-                            buttonStyle.backgroundColor = mintColor;
-                            buttonStyle.borderColor = mintColor;
-                            buttonStyle.color = '#121212'; // Dark text
+                            buttonStyle.background = 'transparent';
+                            buttonStyle.color = accentBlue;
+                            buttonStyle.border = `1px solid ${accentBlue}`;
                         }
 
                         return (
@@ -131,26 +131,26 @@ export default function Rates({ session }) {
                                 key={service.id}
                                 style={{
                                     padding: '15px',
-                                    border: isBestRate ? '2px solid #39FF14' : '1px solid #4A4A4A',
+                                    border: isBestRate ? `2px solid ${accentBlue}` : '1px solid #4A4A4A',
                                     borderRadius: '8px',
                                     backgroundColor: '#1E1E1E'
                                 }}
                             >
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                     <h3 style={{ margin: 0, color: '#FFFFFF' }}>{service.name}</h3>
-                                    {isBestRate && <span style={{ backgroundColor: '#FFD700', padding: '3px 8px', borderRadius: '4px', color: '#121212', fontSize: '0.9em', fontWeight: 'bold' }}>BEST RATE</span>}
+                                    {isBestRate && <span style={{ backgroundColor: accentBlue, padding: '3px 8px', borderRadius: '4px', color: '#121212', fontSize: '0.9em', fontWeight: 'bold' }}>BEST RATE</span>}
                                 </div>
 
                                 <p style={{ margin: '0 0 5px 0', color: '#BDBDBD' }}>Rate: 1 USD = {service.rate.toFixed(2)} XOF</p>
                                 <p style={{ margin: '0 0 15px 0', color: '#BDBDBD' }}>Fee: {service.fee === 0.00 ? 'Free' : `$${service.fee.toFixed(2)}`}</p>
 
-                                <h4 style={{ margin: '0 0 15px 0', color: '#8AFF8A' }}>
+                                <h4 style={{ margin: '0 0 15px 0', color: '#A6D1E6' }}>
                                     Recipient Gets: {service.recipientGets.toLocaleString('en-US', { style: 'currency', currency: 'XOF', minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                                 </h4>
 
                                 <button
                                     onClick={() => handleSendClick(service)}
-                                    className={isBestRate ? "btn btn-primary" : ""}
+                                    className={isBestRate ? "btn btn-primary" : "btn"}
                                     style={buttonStyle}
                                 >
                                     Send with {service.name}
