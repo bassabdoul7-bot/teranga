@@ -107,6 +107,7 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
         }
     };
 
+    // --- STYLE CHANGE HERE: Removed borderBottom ---
     return (
         <div style={{ display: 'flex', gap: '10px' }}>
             <Link to={`/profile/${comment.user_id}`} style={{ flexShrink: 0, marginTop: '5px' }}>
@@ -117,8 +118,9 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
                 )}
             </Link>
 
-            <div style={{ flexGrow: 1, backgroundColor: '#1E1E1E', padding: '10px', borderRadius: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+            {/* --- STYLE CHANGE HERE: Made background darker to match post card --- */}
+            <div style={{ flexGrow: 1, backgroundColor: '#3A3A3A', padding: '10px', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3Bpx' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                         <Link to={`/profile/${comment.user_id}`} style={{ textDecoration: 'none' }}>
                             <p style={{ fontWeight: 'bold', margin: 0, fontSize: '0.9em', color: '#A6D1E6' }}>{username}</p>

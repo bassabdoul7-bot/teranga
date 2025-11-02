@@ -96,7 +96,7 @@ function StoryUploaderModal({ session, onClose, onStoryUploaded }) {
                         <p>Select a photo or video</p>
                     </div>
                 )}
-
+                
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="story-upload" className="btn btn-secondary" style={{ width: '100%', textDecoration: 'none' }}>
                         {mediaFile ? `Selected: ${mediaFile.name}` : 'Choose Photo/Video'}
@@ -123,7 +123,7 @@ function StoryViewerModal({ stories, profiles, onClose }) {
         }
         return i + 1;
     });
-
+    
     const prevStory = () => setCurrentStoryIndex(i => (i - 1 < 0 ? 0 : i - 1));
 
     // Auto-advance timer for images
@@ -165,7 +165,7 @@ function StoryViewerModal({ stories, profiles, onClose }) {
             {/* Header / Info (MODIFIED) */}
             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', padding: '10px', boxSizing: 'border-box', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%)' }}>
                 {/* Exit Button and User Info REMOVED */}
-
+                
                 {/* Progress Bars (Kept) */}
                 <div style={{ display: 'flex', gap: '3px', padding: '10px 10px 0 10px' }}>
                     {stories.map((story, index) => (
@@ -181,7 +181,7 @@ function StoryViewerModal({ stories, profiles, onClose }) {
 // --- NEW: StoryReel Component (Rectangle style + Real Media) ---
 function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
     const navigate = useNavigate();
-
+    
     // Group stories by user
     const storiesByUser = (stories || []).reduce((acc, story) => {
         if (!acc[story.user_id]) {
@@ -206,7 +206,7 @@ function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
         boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
         backgroundColor: '#3A3A3A',
     };
-
+    
     const mediaStyle = {
         width: '100%',
         height: '100%',
@@ -271,9 +271,8 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
   const [editingContent, setEditingContent] = useState('');
   const [editLoading, setEditLoading] = useState(false);
 
-  if (!posts || posts.length === 0) {
-    return <p style={{ textAlign: 'center', color: '#A0AEC0', marginTop: '30px' }}>Be the first to post in the community!</p>;
-  }
+  // NOTE: PostList no longer shows the "no posts" message
+  // It will just be empty if there are no posts.
 
   const handleShare = async (postContent, postId) => {
     const shareData = { title: 'Post from TerangaHub', text: postContent, url: window.location.origin + '/post/' + postId };
@@ -307,7 +306,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
         .from('posts')
         .update({ content: editingContent, updated_at: new Date() })
         .eq('id', postId);
-
+    
     setEditLoading(false);
     if (error) {
         alert('Error updating post: ' + error.message);
@@ -348,66 +347,80 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
         }
 
         return (
-          <div key={post.id} style={{ padding: '15px 0', marginBottom: '15px', borderBottom: '1px solid #4A5A6A' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Link to={`/profile/${post.user_id}`}>
-                        {avatarUrl ? (
-                            <img src={avatarUrl} alt={username} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
-                        ) : (
-                            <FaUserCircle style={{ fontSize: '40px', color: '#4A4A4A' }} />
-                        )}
-                    </Link>
-                    <div>
-                        <Link to={`/profile/${post.user_id}`} style={{ textDecoration: 'none' }}>
-                            <p style={{ fontWeight: 'bold', margin: 0, fontSize: '1.0em', color: '#A6D1E6' }}>{username}</p>
+          // --- THIS IS THE CHANGE: Wrapped post in a "card" ---
+          <div 
+            key={post.id} 
+            style={{ 
+                backgroundColor: '#1E1E1E', 
+                borderRadius: '12px', 
+                marginBottom: '20px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                overflow: 'hidden' // Keep media inside rounded corners
+            }}
+          >
+            {/* All post content now lives inside the card */}
+            <div style={{ padding: '15px' }}>
+                {/* Post Author Info + Edit/Delete Buttons */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Link to={`/profile/${post.user_id}`}>
+                            {avatarUrl ? (
+                                <img src={avatarUrl} alt={username} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
+                            ) : (
+                                <FaUserCircle style={{ fontSize: '40px', color: '#4A4A4A' }} />
+                            )}
                         </Link>
-                        <p style={{ margin: 0, fontSize: '0.8em', color: '#757575' }}>{postTimeAgo}</p>
+                        <div>
+                            <Link to={`/profile/${post.user_id}`} style={{ textDecoration: 'none' }}>
+                                <p style={{ fontWeight: 'bold', margin: 0, fontSize: '1.0em', color: '#A6D1E6' }}>{username}</p>
+                            </Link>
+                            <p style={{ margin: 0, fontSize: '0.8em', color: '#757575' }}>{postTimeAgo}</p>
+                        </div>
                     </div>
+                    
+                    {isOwnPost && (
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                            <button
+                                onClick={() => handleEditClick(post)}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#757575', fontSize: '0.9em', height: 'fit-content' }}
+                                aria-label="Edit post"
+                            >
+                                <FaPencilAlt />
+                            </button>
+                            <button
+                                onClick={() => handleDeletePost(post.id)}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#FF6B6B', fontSize: '0.9em', height: 'fit-content' }}
+                                aria-label="Delete post"
+                            >
+                                <FaTrash />
+                            </button>
+                        </div>
+                    )}
                 </div>
 
-                {isOwnPost && (
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <button
-                            onClick={() => handleEditClick(post)}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#757575', fontSize: '0.9em', height: 'fit-content' }}
-                            aria-label="Edit post"
-                        >
-                            <FaPencilAlt />
-                        </button>
-                        <button
-                            onClick={() => handleDeletePost(post.id)}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#FF6B6B', fontSize: '0.9em', height: 'fit-content' }}
-                            aria-label="Delete post"
-                        >
-                            <FaTrash />
-                        </button>
+                {editingPostId === post.id ? (
+                    <div style={{ marginTop: '10px' }}>
+                        <textarea
+                            value={editingContent}
+                            onChange={(e) => setEditingContent(e.target.value)}
+                            style={{ width: '100%', minHeight: '80px', padding: '10px', boxSizing: 'border-box', borderRadius: '6px', border: '1px solid #BDBDBD', resize: 'vertical', backgroundColor: '#FFFFFF', color: '#121212' }}
+                            disabled={editLoading}
+                        />
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                            <button onClick={() => handleEditSave(post.id)} className="btn btn-primary" disabled={editLoading}>
+                                {editLoading ? 'Saving...' : 'Save'}
+                            </button>
+                            <button onClick={handleEditCancel} className="btn btn-muted" disabled={editLoading}>
+                                Cancel
+                            </button>
+                        </div>
                     </div>
+                ) : (
+                    <p style={{ margin: '0 0 10px 0', fontSize: '1.1em', wordWrap: 'break-word', color: '#E0E0E0' }}>{post.content}</p>
                 )}
             </div>
-
-            {editingPostId === post.id ? (
-                <div style={{ marginTop: '10px' }}>
-                    <textarea
-                        value={editingContent}
-                        onChange={(e) => setEditingContent(e.target.value)}
-                        style={{ width: '100%', minHeight: '80px', padding: '10px', boxSizing: 'border-box', borderRadius: '6px', border: '1px solid #BDBDBD', resize: 'vertical', backgroundColor: '#FFFFFF', color: '#121212' }}
-                        disabled={editLoading}
-                    />
-                    <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                        <button onClick={() => handleEditSave(post.id)} className="btn btn-primary" disabled={editLoading}>
-                            {editLoading ? 'Saving...' : 'Save'}
-                        </button>
-                        <button onClick={handleEditCancel} className="btn btn-muted" disabled={editLoading}>
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            ) : (
-                <p style={{ margin: '0 0 10px 0', fontSize: '1.1em', wordWrap: 'break-word', color: '#E0E0E0' }}>{post.content}</p>
-            )}
-
-            {/* --- VIDEO AUTOPLAY ADDED --- */}
+            
+            {/* --- Media is now outside the padding, edge-to-edge --- */}
             {post.image_url && (
                 post.media_type === 'video'
                 ? (
@@ -418,52 +431,55 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                         loop
                         playsInline
                         controls
-                        style={{ width: '100%', height: 'auto', maxHeight: '400px', borderRadius: '8px', marginBottom: '15px', backgroundColor: 'black' }}
+                        style={{ width: '100%', height: 'auto', maxHeight: '400px', display: 'block', backgroundColor: 'black' }}
                     />
                 )
                 : (
                     <img
                         src={post.image_url}
                         alt="Post media"
-                        style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'cover', borderRadius: '8px', marginBottom: '15px' }}
+                        style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'cover', display: 'block' }}
                     />
                 )
             )}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderTop: '1px solid #1E1E1E', paddingTop: '10px', marginTop: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                <button
-                  onClick={() => onLikeToggle(post.id, hasLiked)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px', fontSize: '1.2em', color: hasLiked ? '#FF6B6B' : '#757575' }}
-                  aria-label={hasLiked ? 'Unlike post' : 'Like post'}
-                >
-                  {hasLiked ? '❤️' : '🤍'}
-                </button>
-                <span style={{ color: '#E0E0E0', fontSize: '0.9em' }}>{likeCount}</span>
-              </div>
+            {/* --- Actions/Comments are back inside padding --- */}
+            <div style={{ padding: '0 15px 15px 15px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderTop: '1px solid #3A3A3A', paddingTop: '15px', marginTop: '15px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <button
+                      onClick={() => onLikeToggle(post.id, hasLiked)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px', fontSize: '1.2em', color: hasLiked ? '#FF6B6B' : '#757575' }}
+                      aria-label={hasLiked ? 'Unlike post' : 'Like post'}
+                    >
+                      {hasLiked ? '❤️' : '🤍'}
+                    </button>
+                    <span style={{ color: '#E0E0E0', fontSize: '0.9em' }}>{likeCount}</span>
+                  </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                 <button
-                    onClick={() => toggleComments(post.id)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px', fontSize: '1.1em', color: '#757575' }}
-                    aria-label="Toggle comments"
-                 >
-                    <FaRegCommentAlt />
-                 </button>
-                 <span style={{ color: '#E0E0E0', fontSize: '0.9em' }}>{commentCount}</span>
-              </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                     <button
+                        onClick={() => toggleComments(post.id)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px', fontSize: '1.1em', color: '#757575' }}
+                        aria-label="Toggle comments"
+                     >
+                        <FaRegCommentAlt />
+                     </button>
+                     <span style={{ color: '#E0E0E0', fontSize: '0.9em' }}>{commentCount}</span>
+                  </div>
 
-              <button
-                 onClick={() => handleShare(post.content, post.id)}
-                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px', fontSize: '1.2em', color: '#A6D1E6', marginLeft: 'auto' }}
-                 aria-label="Share post"
-              >
-                 <RiShareForwardLine />
-              </button>
+                  <button
+                     onClick={() => handleShare(post.content, post.id)}
+                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px', fontSize: '1.2em', color: '#A6D1E6', marginLeft: 'auto' }}
+                     aria-label="Share post"
+                  >
+                     <RiShareForwardLine />
+                  </button>
+                </div>
+
+                {/* --- THIS IS THE FIX --- */}
+                {isExpanded && <CommentSection postId={post.id} userId={currentUserId} onCommentChange={onDataChange} onClose={() => toggleComments(post.id)} />}
             </div>
-
-            {isExpanded && <CommentSection postId={post.id} userId={currentUserId} onCommentChange={onDataChange} />}
-
           </div>
         );
       })}
@@ -476,7 +492,7 @@ function CreatePost({ userId, onPostCreated }) {
     const [content, setContent] = useState('');
     const [mediaFile, setMediaFile] = useState(null); // Renamed from imageFile
     const [loading, setLoading] = useState(false);
-
+    
     const handleFileChange = (e) => { 
         if (e.target.files && e.target.files[0]) { 
             setMediaFile(e.target.files[0]); 
@@ -486,7 +502,7 @@ function CreatePost({ userId, onPostCreated }) {
     async function handleSubmit(event) {
         event.preventDefault(); 
         if (!content.trim() && !mediaFile) return; 
-
+        
         setLoading(true); 
         let mediaUrl = null;
         let media_type = null;
@@ -506,7 +522,7 @@ function CreatePost({ userId, onPostCreated }) {
             image_url: mediaUrl, 
             media_type: media_type
         });
-
+        
         setLoading(false);
         if (error) { 
             alert('Error creating post: ' + error.message); 
@@ -517,36 +533,39 @@ function CreatePost({ userId, onPostCreated }) {
         }
     }
 
+    // --- NEW: Wrapped CreatePost in a card ---
     return (
-        <form onSubmit={handleSubmit} style={{ marginBottom: '30px' }}>
-            <textarea
-                placeholder="What's on your mind, Teranga?"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                rows="3"
-                disabled={loading}
-                style={{ width: '100%', padding: '12px', boxSizing: 'border-box', marginBottom: '10px', borderRadius: '6px', border: '1px solid #BDBDBD', resize: 'vertical', backgroundColor: '#FFFFFF', color: '#121212' }}
-            />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
-                <label htmlFor="media-upload" style={{ cursor: 'pointer', color: '#A6D1E6' }}>
-                    <FaImage style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
-                    <span style={{ fontSize: '0.9em', marginLeft: '5px' }}>
-                         {mediaFile ? `File: ${mediaFile.name}` : 'Add Photo/Video'}
-                    </span>
-                </label>
-                <input 
-                    id="media-upload" 
-                    type="file" 
-                    accept="image/png, image/jpeg, video/mp4, video/quicktime" 
-                    onChange={handleFileChange} 
-                    disabled={loading} 
-                    style={{ display: 'none' }} 
+        <div style={{ backgroundColor: '#1E1E1E', padding: '15px', borderRadius: '12px', marginBottom: '20px' }}>
+            <form onSubmit={handleSubmit}>
+                <textarea
+                    placeholder="What's on your mind, Teranga?"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    rows="3"
+                    disabled={loading}
+                    style={{ width: '100%', padding: '12px', boxSizing: 'border-box', marginBottom: '10px', borderRadius: '6px', border: '1px solid #BDBDBD', resize: 'vertical', backgroundColor: '#FFFFFF', color: '#121212' }}
                 />
-            </div>
-            <button type="submit" disabled={loading || (!content.trim() && !mediaFile)} className="btn btn-primary" style={{ width: '100%' }}>
-                {loading ? 'Posting...' : 'Post to Community'}
-            </button>
-        </form>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
+                    <label htmlFor="media-upload" style={{ cursor: 'pointer', color: '#A6D1E6' }}>
+                        <FaImage style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
+                        <span style={{ fontSize: '0.9em', marginLeft: '5px' }}>
+                             {mediaFile ? `File: ${mediaFile.name}` : 'Add Photo/Video'}
+                        </span>
+                    </label>
+                    <input 
+                        id="media-upload" 
+                        type="file" 
+                        accept="image/png, image/jpeg, video/mp4, video/quicktime" 
+                        onChange={handleFileChange} 
+                        disabled={loading} 
+                        style={{ display: 'none' }} 
+                    />
+                </div>
+                <button type="submit" disabled={loading || (!content.trim() && !mediaFile)} className="btn btn-primary" style={{ width: '100%' }}>
+                    {loading ? 'Posting...' : 'Post to Community'}
+                </button>
+            </form>
+        </div>
     );
 }
 
@@ -581,10 +600,10 @@ export default function Feed({ session }) {
     // 2. Fetch Posts
     const { data: postsData, error: postsError } = await supabase.from('posts').select('id, user_id, created_at, updated_at, content, image_url, media_type, likes ( count ), comments ( count )').order('created_at', { ascending: false });
     if (postsError) { console.error('Err fetch posts:', postsError); setLoading(false); return; }
-
+    
     const postsWithCounts = (postsData || []).map(post => ({ ...post, like_count: post.likes && post.likes[0] ? post.likes[0].count : 0, comment_count: post.comments && post.comments[0] ? post.comments[0].count : 0 }));
     setPosts(postsWithCounts);
-
+    
     // 3. Get all unique user IDs from both
     const postUserIds = postsWithCounts.map(post => post.user_id);
     const storyUserIds = (storiesData || []).map(story => story.user_id);
@@ -600,7 +619,7 @@ export default function Feed({ session }) {
         }, {});
         setProfiles(profilesMap);
     } else { setProfiles({}); }
-
+     
     // 4. Fetch Likes
     const { data: likesData, error: likesError } = await supabase.from('likes').select('post_id').eq('user_id', currentUserId);
      if (likesError) { console.error('Err fetch likes:', likesError); }
@@ -609,19 +628,19 @@ export default function Feed({ session }) {
   }
 
   useEffect(() => { fetchFeed(); }, [session.user.id, refreshToggle]);
-
+  
   const handleDataChange = () => { setRefreshToggle(prev => prev + 1); };
-
+  
   const handleLikeToggle = async (postId, hasLiked) => {
     const currentUserId = session.user.id; if (hasLiked) { const { error } = await supabase.from('likes').delete().match({ user_id: currentUserId, post_id: postId }); if (error) { console.error('Err unlike:', error); } else { setUserLikes(prev => prev.filter(l => l.post_id !== postId)); setPosts(prev => prev.map(p => p.id === postId ? { ...p, like_count: Math.max(0, p.like_count - 1) } : p )); } } else { const { error } = await supabase.from('likes').insert({ user_id: currentUserId, post_id: postId }); if (error) { console.error('Err like:', error); } else { setUserLikes(prev => [...prev, { post_id: postId }]); setPosts(prev => prev.map(p => p.id === postId ? { ...p, like_count: p.like_count + 1 } : p )); } }
   };
 
   if (loading && posts.length === 0 && stories.length === 0) {
-    return <div style={{ textAlign: 'center', marginTop: '50px', color: '#E0E0E0' }}>Loading Community Dashboard...</div>;
+    return <div style={{ textAlign: 'center', marginTop: '50px', color: '#E0E0E0' }}>Loading...</div>;
   }
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 15px' }}>
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0' }}>
       {/* --- NEW: Render Modals --- */}
       {showUploaderModal && (
           <StoryUploaderModal 
@@ -638,29 +657,12 @@ export default function Feed({ session }) {
           />
       )}
 
-      <header style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px 0', paddingBottom: '10px', borderBottom: '1px solid #4A4A4A' }}>
-        <h1 style={{ color: '#E0E0E0', margin: 0, fontSize: '1.5em' }}>Community Dashboard</h1>
-      </header>
-
-      <div style={{ marginBottom: '20px' }}>
-        <Link 
-            to="/profile" 
-            className="btn btn-secondary" 
-            style={{ 
-                textDecoration: 'none', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                gap: '8px', 
-                fontSize: '0.9em', 
-                padding: '10px 16px', 
-                width: 'fit-content', 
-                margin: '0 auto' 
-            }}
-        >
-            <FaStore />
-            Add Listing
-        </Link>
+      {/* --- MODIFIED: Added padding here --- */}
+      <div style={{ padding: '0 15px' }}>
+        <header style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px 0', paddingBottom: '10px', borderBottom: '1px solid #4A4A4A' }}>
+          {/* --- MODIFIED: Changed title --- */}
+          <h1 style={{ color: '#E0E0E0', margin: 0, fontSize: '1.5em' }}>Community</h1>
+        </header>
       </div>
 
       <StoryReel 
@@ -670,18 +672,31 @@ export default function Feed({ session }) {
           onViewStory={(userStories) => setViewingUserStories(userStories)}
       />
 
-      <CreatePost userId={session.user.id} onPostCreated={handleDataChange} />
+      {/* --- MODIFIED: Added padding and new Card wrapper --- */}
+      <div style={{ padding: '0 15px', marginTop: '20px' }}>
+        <CreatePost userId={session.user.id} onPostCreated={handleDataChange} />
+      </div>
+      
+      {/* --- MODIFIED: Added padding here --- */}
+      <div style={{ padding: '0 15px' }}>
+        <PostList
+          posts={posts}
+          profiles={profiles}
+          userLikes={userLikes}
+          onLikeToggle={handleLikeToggle}
+          currentUserId={session.user.id}
+          onDataChange={handleDataChange}
+        />
+      </div>
 
-      <h2 style={{ color: '#E0E0E0', margin: '30px 0 10px 0', borderBottom: '1px solid #4A4A4A', paddingBottom: '5px' }}>Community Feed</h2>
-
-      <PostList
-        posts={posts}
-        profiles={profiles}
-        userLikes={userLikes}
-        onLikeToggle={handleLikeToggle}
-        currentUserId={session.user.id}
-        onDataChange={handleDataChange}
-      />
+      {/* --- NEW: Message if feed is empty --- */}
+      {!loading && posts.length === 0 && (
+          <div style={{ padding: '40px 15px', textAlign: 'center' }}>
+              <FaVideo style={{ fontSize: '40px', color: '#4A4A4A', marginBottom: '10px' }} />
+              <h3 style={{ color: 'white' }}>Welcome to the Community</h3>
+              <p style={{ color: '#BDBDBD' }}>Be the first to share a post or add to your story.</p>
+          </div>
+      )}
     </div>
   );
 }
