@@ -1,6 +1,8 @@
-﻿/* --- Vite Default Styles --- */
+﻿@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap');
+
+/* --- Vite Default Styles --- */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: dark; /* Force dark scheme */
@@ -203,22 +205,22 @@ nav a:not([style*="font-weight: bold"]) {
 }
 
 
-/* --- Feed Specific Styles (Update text colors for NEW BLUE THEME) --- */
+/* --- Feed Specific Styles (FIX: REMOVED !IMPORTANT) --- */
 /* Titles */
 header h1, h2 {
     color: #FFFFFF !important; /* White Title */
 }
 /* Base paragraph text */
 p {
-    color: #E0E0E0 !important; /* Light Gray */
+    color: #E0E0E0; /* Light Gray - !important REMOVED */
 }
 /* Post author name */
 p[style*="font-weight: bold"] {
-    color: #A6D1E6 !important; /* Light Cool Blue */
+    color: #A6D1E6; /* Light Cool Blue - !important REMOVED */
 }
 /* Timestamp */
 p[style*="font-size: 0.8em"] {
-    color: #757575 !important; /* Medium Gray */
+    color: #757575; /* Medium Gray - !important REMOVED */
 }
 /* Icons */
 button[aria-label*="Like post"] { color: #757575 !important; }
