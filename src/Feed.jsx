@@ -96,7 +96,7 @@ function StoryUploaderModal({ session, onClose, onStoryUploaded }) {
                         <p>Select a photo or video</p>
                     </div>
                 )}
-                
+
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="story-upload" className="btn btn-secondary" style={{ width: '100%', textDecoration: 'none' }}>
                         {mediaFile ? `Selected: ${mediaFile.name}` : 'Choose Photo/Video'}
@@ -123,7 +123,7 @@ function StoryViewerModal({ stories, profiles, onClose }) {
         }
         return i + 1;
     });
-    
+
     const prevStory = () => setCurrentStoryIndex(i => (i - 1 < 0 ? 0 : i - 1));
 
     // Auto-advance timer for images
@@ -165,7 +165,7 @@ function StoryViewerModal({ stories, profiles, onClose }) {
             {/* Header / Info (MODIFIED) */}
             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', padding: '10px', boxSizing: 'border-box', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%)' }}>
                 {/* Exit Button and User Info REMOVED */}
-                
+
                 {/* Progress Bars (Kept) */}
                 <div style={{ display: 'flex', gap: '3px', padding: '10px 10px 0 10px' }}>
                     {stories.map((story, index) => (
@@ -181,7 +181,7 @@ function StoryViewerModal({ stories, profiles, onClose }) {
 // --- NEW: StoryReel Component (Rectangle style + Real Media) ---
 function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
     const navigate = useNavigate();
-    
+
     // Group stories by user
     const storiesByUser = (stories || []).reduce((acc, story) => {
         if (!acc[story.user_id]) {
@@ -206,7 +206,7 @@ function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
         boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
         backgroundColor: '#3A3A3A',
     };
-    
+
     const mediaStyle = {
         width: '100%',
         height: '100%',
@@ -307,7 +307,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
         .from('posts')
         .update({ content: editingContent, updated_at: new Date() })
         .eq('id', postId);
-    
+
     setEditLoading(false);
     if (error) {
         alert('Error updating post: ' + error.message);
@@ -365,7 +365,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                         <p style={{ margin: 0, fontSize: '0.8em', color: '#757575' }}>{postTimeAgo}</p>
                     </div>
                 </div>
-                
+
                 {isOwnPost && (
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <button
@@ -476,7 +476,7 @@ function CreatePost({ userId, onPostCreated }) {
     const [content, setContent] = useState('');
     const [mediaFile, setMediaFile] = useState(null); // Renamed from imageFile
     const [loading, setLoading] = useState(false);
-    
+
     const handleFileChange = (e) => { 
         if (e.target.files && e.target.files[0]) { 
             setMediaFile(e.target.files[0]); 
@@ -486,7 +486,7 @@ function CreatePost({ userId, onPostCreated }) {
     async function handleSubmit(event) {
         event.preventDefault(); 
         if (!content.trim() && !mediaFile) return; 
-        
+
         setLoading(true); 
         let mediaUrl = null;
         let media_type = null;
@@ -506,7 +506,7 @@ function CreatePost({ userId, onPostCreated }) {
             image_url: mediaUrl, 
             media_type: media_type
         });
-        
+
         setLoading(false);
         if (error) { 
             alert('Error creating post: ' + error.message); 
@@ -581,10 +581,10 @@ export default function Feed({ session }) {
     // 2. Fetch Posts
     const { data: postsData, error: postsError } = await supabase.from('posts').select('id, user_id, created_at, updated_at, content, image_url, media_type, likes ( count ), comments ( count )').order('created_at', { ascending: false });
     if (postsError) { console.error('Err fetch posts:', postsError); setLoading(false); return; }
-    
+
     const postsWithCounts = (postsData || []).map(post => ({ ...post, like_count: post.likes && post.likes[0] ? post.likes[0].count : 0, comment_count: post.comments && post.comments[0] ? post.comments[0].count : 0 }));
     setPosts(postsWithCounts);
-    
+
     // 3. Get all unique user IDs from both
     const postUserIds = postsWithCounts.map(post => post.user_id);
     const storyUserIds = (storiesData || []).map(story => story.user_id);
@@ -600,7 +600,7 @@ export default function Feed({ session }) {
         }, {});
         setProfiles(profilesMap);
     } else { setProfiles({}); }
-     
+
     // 4. Fetch Likes
     const { data: likesData, error: likesError } = await supabase.from('likes').select('post_id').eq('user_id', currentUserId);
      if (likesError) { console.error('Err fetch likes:', likesError); }
@@ -609,9 +609,9 @@ export default function Feed({ session }) {
   }
 
   useEffect(() => { fetchFeed(); }, [session.user.id, refreshToggle]);
-  
+
   const handleDataChange = () => { setRefreshToggle(prev => prev + 1); };
-  
+
   const handleLikeToggle = async (postId, hasLiked) => {
     const currentUserId = session.user.id; if (hasLiked) { const { error } = await supabase.from('likes').delete().match({ user_id: currentUserId, post_id: postId }); if (error) { console.error('Err unlike:', error); } else { setUserLikes(prev => prev.filter(l => l.post_id !== postId)); setPosts(prev => prev.map(p => p.id === postId ? { ...p, like_count: Math.max(0, p.like_count - 1) } : p )); } } else { const { error } = await supabase.from('likes').insert({ user_id: currentUserId, post_id: postId }); if (error) { console.error('Err like:', error); } else { setUserLikes(prev => [...prev, { post_id: postId }]); setPosts(prev => prev.map(p => p.id === postId ? { ...p, like_count: p.like_count + 1 } : p )); } }
   };

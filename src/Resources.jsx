@@ -18,7 +18,7 @@ export default function Resources() {
 
   const iconStyle = {
     fontSize: '2.5em',
-    color: '#39FF14', // Neon Green
+    color: '#A6D1E6', // --- CHANGED TO NEW THEME COLOR ---
     marginRight: '20px',
   };
 
@@ -48,22 +48,22 @@ export default function Resources() {
       </header>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '30px' }}>
-        
+
         {/* Link to Directory */}
-        <Link to="/directory" style={linkStyle} 
-              onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-              onMouseOut={e => e.currentTarget.style.transform = 'none'}>
+        <Link to="/directory" style={linkStyle}
+            onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseOut={e => e.currentTarget.style.transform = 'none'}>
           <FaStore style={iconStyle} />
           <div style={textContainerStyle}>
             <span style={titleStyle}>Community Directory</span>
             <span style={descriptionStyle}>Find Senegalese-owned businesses.</span>
           </div>
         </Link>
-        
+
         {/* Link to Events */}
         <Link to="/events" style={linkStyle}
-              onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-              onMouseOut={e => e.currentTarget.style.transform = 'none'}>
+            onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseOut={e => e.currentTarget.style.transform = 'none'}>
           <FaCalendarAlt style={iconStyle} />
           <div style={textContainerStyle}>
             <span style={titleStyle}>Community Events</span>
