@@ -4,7 +4,7 @@ import { RiShareForwardLine } from 'react-icons/ri';
 import { FaRegCommentAlt, FaTrash, FaImage, FaUserCircle, FaStore, FaPencilAlt, FaPlus } from 'react-icons/fa';
 import { formatDistanceToNow } from 'date-fns';
 import CommentSection from './CommentSection';
-import { Link, useNavigate } from 'react-router-dom'; // Already has useNavigate
+import { Link, useNavigate } from 'react-router-dom'; // Added useNavigate
 
 // --- START: Helper Functions ---
 async function uploadMedia(file, userId) {
@@ -21,7 +21,7 @@ async function uploadMedia(file, userId) {
 
 // --- NEW: StoryReel Component ---
 function StoryReel({ stories, profiles, currentUserId }) {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const [profileMap, setProfileMap] = useState({});
 
     useEffect(() => {
@@ -33,37 +33,41 @@ function StoryReel({ stories, profiles, currentUserId }) {
         setProfileMap(map);
     }, [profiles]);
 
-    const storyCircleStyle = {
+    // --- STYLES CHANGED TO RECTANGLE ---
+    const storyCardStyle = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         cursor: 'pointer',
-        width: '64px',
+        width: '65px', // Card width
         textAlign: 'center',
+        flexShrink: 0,
     };
 
     const storyImageContainer = {
-        width: '56px',
-        height: '56px',
-        borderRadius: '50%',
+        width: '65px',
+        height: '90px', // Card height
+        borderRadius: '8px', // Rounded corners
         padding: '3px',
         background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        boxSizing: 'border-box',
     };
 
     const storyImage = {
-        width: '52px',
-        height: '52px',
-        borderRadius: '50%',
+        width: '100%',
+        height: '100%',
+        borderRadius: '6px', // Inner rounded corners
         objectFit: 'cover',
         border: '2px solid #121a2a', // Match body background
         backgroundColor: '#4A4A4A',
+        boxSizing: 'border-box',
     };
-
-    const storyAddCircle = {
-        ...storyCircleStyle,
+    
+    const storyAddCard = {
+        ...storyCardStyle,
         marginLeft: '10px',
     };
 
@@ -81,6 +85,7 @@ function StoryReel({ stories, profiles, currentUserId }) {
         justifyContent: 'center',
         fontSize: '24px',
     };
+    // --- END STYLE CHANGES ---
 
     const storyUsernameStyle = {
         fontSize: '0.75em',
@@ -92,12 +97,12 @@ function StoryReel({ stories, profiles, currentUserId }) {
         width: '100%',
     };
 
-    // --- THIS IS NOW FIXED ---
+    // Placeholder for Story Viewer
     const openStory = (story) => {
-        navigate(`/stories/${story.user_id}`); // Go to the new viewer page
+        navigate(`/stories/${story.user_id}`);
     };
 
-    // This now navigates to the upload page
+    // Placeholder for Story Upload
     const addStory = () => {
         navigate('/stories/upload');
     };
@@ -106,7 +111,7 @@ function StoryReel({ stories, profiles, currentUserId }) {
         <div style={{ padding: '10px 0 15px 0', borderBottom: '1px solid #4A4A4A', marginBottom: '15px' }}>
             <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', paddingLeft: '15px' }}>
                 {/* Add Story Button */}
-                <div style={storyAddCircle} onClick={addStory}>
+                <div style={storyAddCard} onClick={addStory}>
                     <div style={storyAddImageContainer}>
                         <div style={storyAddIcon}>
                             <FaPlus />
@@ -120,7 +125,7 @@ function StoryReel({ stories, profiles, currentUserId }) {
                     const profile = profileMap[story.user_id];
                     if (!profile) return null;
                     return (
-                        <div key={story.id} style={storyCircleStyle} onClick={() => openStory(story)}>
+                        <div key={story.id} style={storyCardStyle} onClick={() => openStory(story)}>
                             <div style={storyImageContainer}>
                                 <img src={profile.avatar_url} alt={profile.username} style={storyImage} />
                             </div>
@@ -181,7 +186,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
         .from('posts')
         .update({ content: editingContent, updated_at: new Date() })
         .eq('id', postId);
-
+    
     setEditLoading(false);
     if (error) {
         alert('Error updating post: ' + error.message);
@@ -244,7 +249,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                         <p style={{ margin: 0, fontSize: '0.8em', color: '#757575' }}>{postTimeAgo}</p>
                     </div>
                 </div>
-
+                
                 {/* NEW: Edit/Delete Button Group */}
                 {isOwnPost && (
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -362,7 +367,7 @@ function CreatePost({ userId, onPostCreated }) {
     const [content, setContent] = useState('');
     const [mediaFile, setMediaFile] = useState(null); // Renamed from imageFile
     const [loading, setLoading] = useState(false);
-
+    
     const handleFileChange = (e) => { 
         if (e.target.files && e.target.files[0]) { 
             setMediaFile(e.target.files[0]); 
@@ -372,7 +377,7 @@ function CreatePost({ userId, onPostCreated }) {
     async function handleSubmit(event) {
         event.preventDefault(); 
         if (!content.trim() && !mediaFile) return; 
-
+        
         setLoading(true); 
         let mediaUrl = null;
         let media_type = null;
@@ -393,7 +398,7 @@ function CreatePost({ userId, onPostCreated }) {
             image_url: mediaUrl, // Still use image_url column for simplicity
             media_type: media_type // Save the new type
         });
-
+        
         setLoading(false);
         if (error) { 
             alert('Error creating post: ' + error.message); 
@@ -466,10 +471,10 @@ export default function Feed({ session }) {
     // Fetch Posts
     const { data: postsData, error: postsError } = await supabase.from('posts').select('id, user_id, created_at, updated_at, content, image_url, media_type, likes ( count ), comments ( count )').order('created_at', { ascending: false });
     if (postsError) { console.error('Err fetch posts:', postsError); setLoading(false); return; }
-
+    
     const postsWithCounts = (postsData || []).map(post => ({ ...post, like_count: post.likes && post.likes[0] ? post.likes[0].count : 0, comment_count: post.comments && post.comments[0] ? post.comments[0].count : 0 }));
     setPosts(postsWithCounts);
-
+    
     // Get all unique user IDs from both stories and posts
     const postUserIds = postsWithCounts.map(post => post.user_id);
     const storyUserIds = (storiesData || []).map(story => story.user_id);
@@ -480,7 +485,7 @@ export default function Feed({ session }) {
         if (profilesError) { console.error('Err fetch profiles:', profilesError); }
         setProfiles(profilesData || []);
     } else { setProfiles([]); }
-
+     
     const { data: likesData, error: likesError } = await supabase.from('likes').select('post_id').eq('user_id', currentUserId);
      if (likesError) { console.error('Err fetch likes:', likesError); }
      setUserLikes(likesData || []);
