@@ -5,14 +5,16 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import Layout from './Layout'; 
 import Profile from './Profile'; 
-import Feed from './Feed';       
+import Feed from './Feed'; 
 import Rates from './Rates'; 
 import ChatList from './ChatList'; 
 import ChatRoom from './ChatRoom'; 
 // IMPORT RENAMED/NEW COMPONENTS
-import Resources from './Resources';     // The new hub
-import Directory from './Directory';     // Renamed from DirectoryPlaceholder
-import Events from './Events';         // Renamed from EventsPlaceholder
+import Resources from './Resources';   // The new hub
+import Directory from './Directory';   // Renamed from DirectoryPlaceholder
+import Events from './Events';       // Renamed from EventsPlaceholder
+import AddStory from './AddStory'; // --- NEWLY ADDED ---
+import StoryViewer from './StoryViewer'; // --- NEWLY ADDED ---
 import './App.css'; 
 
 function App() {
@@ -72,11 +74,15 @@ function App() {
             <Route path="rates" element={<Rates session={session} />} /> 
             <Route path="chat" element={<ChatList session={session} />} /> 
             <Route path="chat/:conversationId" element={<ChatRoom session={session} />} /> 
-            
+
             {/* UPDATED RESOURCES ROUTES */}
             <Route path="resources" element={<Resources />} /> {/* Main Hub */}
             <Route path="directory" element={<Directory session={session} />} /> {/* Specific Page */}
             <Route path="events" element={<Events session={session} />} /> {/* Specific Page */}
+
+            {/* --- NEW STORY ROUTES --- */}
+            <Route path="stories/upload" element={<AddStory session={session} />} />
+            <Route path="stories/:userId" element={<StoryViewer />} />
 
             <Route path="profile/:userId?" element={<Profile session={session} setSession={setSession} />} /> 
             <Route path="*" element={<Navigate to="/feed" replace />} /> 

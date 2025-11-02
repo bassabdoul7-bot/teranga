@@ -1,22 +1,138 @@
 ﻿import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { RiShareForwardLine } from 'react-icons/ri';
-import { FaRegCommentAlt, FaTrash, FaImage, FaUserCircle, FaStore, FaPencilAlt } from 'react-icons/fa';
+import { FaRegCommentAlt, FaTrash, FaImage, FaUserCircle, FaStore, FaPencilAlt, FaPlus } from 'react-icons/fa';
 import { formatDistanceToNow } from 'date-fns';
 import CommentSection from './CommentSection';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Already has useNavigate
 
 // --- START: Helper Functions ---
 async function uploadMedia(file, userId) {
     if (!file) return null;
     const fileExt = file.name.split('.').pop();
     const fileName = `${userId}/${Date.now()}.${fileExt}`;
+    // BUCKET CHANGED TO 'post_photos'
     const { data, error } = await supabase.storage.from('post_photos').upload(fileName, file, { cacheControl: '3600', upsert: false });
     if (error) { console.error('Storage Upload Error:', error); alert('Image upload failed: ' + error.message); return null; }
     const { data: publicURLData } = supabase.storage.from('post_photos').getPublicUrl(fileName);
     return publicURLData.publicUrl;
 }
 // --- END: Helper Functions ---
+
+// --- NEW: StoryReel Component ---
+function StoryReel({ stories, profiles, currentUserId }) {
+    const navigate = useNavigate(); 
+    const [profileMap, setProfileMap] = useState({});
+
+    useEffect(() => {
+        // Create a map for quick profile lookups
+        const map = profiles.reduce((acc, profile) => {
+            acc[profile.id] = profile;
+            return acc;
+        }, {});
+        setProfileMap(map);
+    }, [profiles]);
+
+    const storyCircleStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        cursor: 'pointer',
+        width: '64px',
+        textAlign: 'center',
+    };
+
+    const storyImageContainer = {
+        width: '56px',
+        height: '56px',
+        borderRadius: '50%',
+        padding: '3px',
+        background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    };
+
+    const storyImage = {
+        width: '52px',
+        height: '52px',
+        borderRadius: '50%',
+        objectFit: 'cover',
+        border: '2px solid #121a2a', // Match body background
+        backgroundColor: '#4A4A4A',
+    };
+
+    const storyAddCircle = {
+        ...storyCircleStyle,
+        marginLeft: '10px',
+    };
+
+    const storyAddImageContainer = {
+        ...storyImageContainer,
+        background: '#4A4A4A',
+    };
+
+     const storyAddIcon = {
+        ...storyImage,
+        backgroundColor: '#3A3A3A',
+        color: '#E0E0E0',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '24px',
+    };
+
+    const storyUsernameStyle = {
+        fontSize: '0.75em',
+        color: '#BDBDBD',
+        marginTop: '4px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        width: '100%',
+    };
+
+    // --- THIS IS NOW FIXED ---
+    const openStory = (story) => {
+        navigate(`/stories/${story.user_id}`); // Go to the new viewer page
+    };
+
+    // This now navigates to the upload page
+    const addStory = () => {
+        navigate('/stories/upload');
+    };
+
+    return (
+        <div style={{ padding: '10px 0 15px 0', borderBottom: '1px solid #4A4A4A', marginBottom: '15px' }}>
+            <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', paddingLeft: '15px' }}>
+                {/* Add Story Button */}
+                <div style={storyAddCircle} onClick={addStory}>
+                    <div style={storyAddImageContainer}>
+                        <div style={storyAddIcon}>
+                            <FaPlus />
+                        </div>
+                    </div>
+                    <span style={storyUsernameStyle}>Add Story</span>
+                </div>
+
+                {/* Other users' stories */}
+                {stories.map(story => {
+                    const profile = profileMap[story.user_id];
+                    if (!profile) return null;
+                    return (
+                        <div key={story.id} style={storyCircleStyle} onClick={() => openStory(story)}>
+                            <div style={storyImageContainer}>
+                                <img src={profile.avatar_url} alt={profile.username} style={storyImage} />
+                            </div>
+                            <span style={storyUsernameStyle}>{profile.username}</span>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+// --- END: StoryReel Component ---
 
 
 // --- PostList Component (UPDATED with Edit Functionality) ---
@@ -65,7 +181,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
         .from('posts')
         .update({ content: editingContent, updated_at: new Date() })
         .eq('id', postId);
-    
+
     setEditLoading(false);
     if (error) {
         alert('Error updating post: ' + error.message);
@@ -123,12 +239,12 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                     </Link>
                     <div>
                         <Link to={`/profile/${post.user_id}`} style={{ textDecoration: 'none' }}>
-                            <p style={{ fontWeight: 'bold', margin: 0, fontSize: '1.0em', color: '#8AFF8A' }}>{username}</p>
+                            <p style={{ fontWeight: 'bold', margin: 0, fontSize: '1.0em', color: '#A6D1E6' }}>{username}</p>
                         </Link>
                         <p style={{ margin: 0, fontSize: '0.8em', color: '#757575' }}>{postTimeAgo}</p>
                     </div>
                 </div>
-                
+
                 {/* NEW: Edit/Delete Button Group */}
                 {isOwnPost && (
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -224,7 +340,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
               {/* Share Button */}
               <button
                  onClick={() => handleShare(post.content, post.id)}
-                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px', fontSize: '1.2em', color: '#8AFF8A', marginLeft: 'auto' }}
+                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px', fontSize: '1.2em', color: '#A6D1E6', marginLeft: 'auto' }}
                  aria-label="Share post"
               >
                  <RiShareForwardLine />
@@ -232,7 +348,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
             </div>
 
             {/* --- Conditionally Rendered Comment Section --- */}
-            {isExpanded && <CommentSection postId={post.id} userId={currentUserId} onCommentChange={onDataChange} onClose={() => toggleComments(post.id)} />}
+            {isExpanded && <CommentSection postId={post.id} userId={currentUserId} onCommentChange={onDataChange} />}
 
           </div>
         );
@@ -246,7 +362,7 @@ function CreatePost({ userId, onPostCreated }) {
     const [content, setContent] = useState('');
     const [mediaFile, setMediaFile] = useState(null); // Renamed from imageFile
     const [loading, setLoading] = useState(false);
-    
+
     const handleFileChange = (e) => { 
         if (e.target.files && e.target.files[0]) { 
             setMediaFile(e.target.files[0]); 
@@ -256,7 +372,7 @@ function CreatePost({ userId, onPostCreated }) {
     async function handleSubmit(event) {
         event.preventDefault(); 
         if (!content.trim() && !mediaFile) return; 
-        
+
         setLoading(true); 
         let mediaUrl = null;
         let media_type = null;
@@ -277,7 +393,7 @@ function CreatePost({ userId, onPostCreated }) {
             image_url: mediaUrl, // Still use image_url column for simplicity
             media_type: media_type // Save the new type
         });
-        
+
         setLoading(false);
         if (error) { 
             alert('Error creating post: ' + error.message); 
@@ -299,7 +415,7 @@ function CreatePost({ userId, onPostCreated }) {
                 style={{ width: '100%', padding: '12px', boxSizing: 'border-box', marginBottom: '10px', borderRadius: '6px', border: '1px solid #BDBDBD', resize: 'vertical', backgroundColor: '#FFFFFF', color: '#121212' }}
             />
             <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
-                <label htmlFor="media-upload" style={{ cursor: 'pointer', color: '#8AFF8A' }}>
+                <label htmlFor="media-upload" style={{ cursor: 'pointer', color: '#A6D1E6' }}>
                     <FaImage style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
                     <span style={{ fontSize: '0.9em', marginLeft: '5px' }}>
                          {mediaFile ? `File: ${mediaFile.name}` : 'Add Photo/Video'}
@@ -321,9 +437,10 @@ function CreatePost({ userId, onPostCreated }) {
     );
 }
 
-// --- Main Feed Component (Unchanged) ---
+// --- Main Feed Component (UPDATED to fetch Stories) ---
 export default function Feed({ session }) {
   const [posts, setPosts] = useState([]);
+  const [stories, setStories] = useState([]); // NEW: State for stories
   const [profiles, setProfiles] = useState([]);
   const [userLikes, setUserLikes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -332,19 +449,39 @@ export default function Feed({ session }) {
   async function fetchFeed() {
     setLoading(true);
     const currentUserId = session.user.id;
-    // Added 'media_type' and 'updated_at' to our data request
+
+    // --- NEW: Fetch Stories ---
+    // Fetch stories from the last 24 hours
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { data: storiesData, error: storiesError } = await supabase
+        .from('stories')
+        .select('id, user_id, media_url, media_type, created_at')
+        .gt('created_at', twentyFourHoursAgo)
+        .order('created_at', { ascending: false });
+
+    if (storiesError) { console.error('Err fetch stories:', storiesError); }
+    setStories(storiesData || []);
+    // --- END NEW ---
+
+    // Fetch Posts
     const { data: postsData, error: postsError } = await supabase.from('posts').select('id, user_id, created_at, updated_at, content, image_url, media_type, likes ( count ), comments ( count )').order('created_at', { ascending: false });
     if (postsError) { console.error('Err fetch posts:', postsError); setLoading(false); return; }
-    
+
     const postsWithCounts = (postsData || []).map(post => ({ ...post, like_count: post.likes && post.likes[0] ? post.likes[0].count : 0, comment_count: post.comments && post.comments[0] ? post.comments[0].count : 0 }));
     setPosts(postsWithCounts);
-    const userIds = [...new Set(postsWithCounts.map(post => post.user_id))];
+
+    // Get all unique user IDs from both stories and posts
+    const postUserIds = postsWithCounts.map(post => post.user_id);
+    const storyUserIds = (storiesData || []).map(story => story.user_id);
+    const userIds = [...new Set([...postUserIds, ...storyUserIds, currentUserId])]; // Also add current user for 'Add Story'
+
     if (userIds.length > 0) {
         const { data: profilesData, error: profilesError } = await supabase.from('profiles').select('id, username, full_name, avatar_url').in('id', userIds);
         if (profilesError) { console.error('Err fetch profiles:', profilesError); }
         setProfiles(profilesData || []);
     } else { setProfiles([]); }
-     const { data: likesData, error: likesError } = await supabase.from('likes').select('post_id').eq('user_id', currentUserId);
+
+    const { data: likesData, error: likesError } = await supabase.from('likes').select('post_id').eq('user_id', currentUserId);
      if (likesError) { console.error('Err fetch likes:', likesError); }
      setUserLikes(likesData || []);
     setLoading(false);
@@ -356,13 +493,13 @@ export default function Feed({ session }) {
     const currentUserId = session.user.id; if (hasLiked) { const { error } = await supabase.from('likes').delete().match({ user_id: currentUserId, post_id: postId }); if (error) { console.error('Err unlike:', error); } else { setUserLikes(prev => prev.filter(l => l.post_id !== postId)); setPosts(prev => prev.map(p => p.id === postId ? { ...p, like_count: Math.max(0, p.like_count - 1) } : p )); } } else { const { error } = await supabase.from('likes').insert({ user_id: currentUserId, post_id: postId }); if (error) { console.error('Err like:', error); } else { setUserLikes(prev => [...prev, { post_id: postId }]); setPosts(prev => prev.map(p => p.id === postId ? { ...p, like_count: p.like_count + 1 } : p )); } }
   };
 
-  if (loading && posts.length === 0) {
+  if (loading && posts.length === 0 && stories.length === 0) {
     return <div style={{ textAlign: 'center', marginTop: '50px', color: '#E0E0E0' }}>Loading Community Dashboard...</div>;
   }
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '15px' }}>
-      <header style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px', paddingBottom: '10px', borderBottom: '1px solid #4A4A4A' }}>
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 15px' }}>
+      <header style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px 0', paddingBottom: '10px', borderBottom: '1px solid #4A4A4A' }}>
         <h1 style={{ color: '#E0E0E0', margin: 0, fontSize: '1.5em' }}>Community Dashboard</h1>
       </header>
 
@@ -387,6 +524,9 @@ export default function Feed({ session }) {
             Add Listing
         </Link>
       </div>
+
+      {/* --- NEW: Display the StoryReel --- */}
+      <StoryReel stories={stories} profiles={profiles} currentUserId={session.user.id} />
 
       <CreatePost userId={session.user.id} onPostCreated={handleDataChange} />
 
