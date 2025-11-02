@@ -76,7 +76,7 @@ function StoryUploaderModal({ session, onClose, onStoryUploaded }) {
 
     return (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ backgroundColor: '#1E1E1E', padding: '20px', borderRadius: '12px', width: '90%', maxWidth: '500px' }}>
+            <div style={{ backgroundColor: '#2C2C2C', padding: '20px', borderRadius: '12px', width: '90%', maxWidth: '500px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                     <h2 style={{ color: 'white', margin: 0 }}>Add Your Story</h2>
                     <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', fontSize: '24px', cursor: 'pointer' }}>&times;</button>
@@ -351,7 +351,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
           <div 
             key={post.id} 
             style={{ 
-                backgroundColor: '#1E1E1E', 
+                backgroundColor: '#2C2C2C', // --- COLOR CHANGED ---
                 borderRadius: '12px', 
                 marginBottom: '20px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
@@ -477,7 +477,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                   </button>
                 </div>
 
-                {/* --- THIS IS THE FIX --- */}
+                {/* This is now nested inside the card */}
                 {isExpanded && <CommentSection postId={post.id} userId={currentUserId} onCommentChange={onDataChange} onClose={() => toggleComments(post.id)} />}
             </div>
           </div>
@@ -535,7 +535,7 @@ function CreatePost({ userId, onPostCreated }) {
 
     // --- NEW: Wrapped CreatePost in a card ---
     return (
-        <div style={{ backgroundColor: '#1E1E1E', padding: '15px', borderRadius: '12px', marginBottom: '20px' }}>
+        <div style={{ backgroundColor: '#2C2C2C', padding: '15px', borderRadius: '12px', marginBottom: '20px' }}>
             <form onSubmit={handleSubmit}>
                 <textarea
                     placeholder="What's on your mind, Teranga?"

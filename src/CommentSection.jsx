@@ -107,7 +107,7 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
         }
     };
 
-    // --- STYLE CHANGE HERE: Removed borderBottom ---
+    // --- STYLE CHANGE HERE: Removed borderBottom, changed background ---
     return (
         <div style={{ display: 'flex', gap: '10px' }}>
             <Link to={`/profile/${comment.user_id}`} style={{ flexShrink: 0, marginTop: '5px' }}>
@@ -118,14 +118,13 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
                 )}
             </Link>
 
-            {/* --- STYLE CHANGE HERE: Made background darker to match post card --- */}
-            <div style={{ flexGrow: 1, backgroundColor: '#3A3A3A', padding: '10px', borderRadius: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3Bpx' }}>
+            <div style={{ flexGrow: 1, backgroundColor: '#4A4A4A', padding: '10px', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                         <Link to={`/profile/${comment.user_id}`} style={{ textDecoration: 'none' }}>
                             <p style={{ fontWeight: 'bold', margin: 0, fontSize: '0.9em', color: '#A6D1E6' }}>{username}</p>
                         </Link>
-                        <p style={{ margin: 0, fontSize: '0.8em', color: '#757575' }}>{timeAgo}</p>
+                        <p style={{ margin: 0, fontSize: '0.8em', color: '#BDBDBD' }}>{timeAgo}</p>
                     </div>
                 </div>
                 
@@ -154,7 +153,7 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
                 <div style={{ display: 'flex', gap: '15px', marginTop: '8px' }}>
                     <button
                         onClick={() => onReplyClick(comment.id)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#757575', fontSize: '0.8em', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#BDBDBD', fontSize: '0.8em', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
                         aria-label="Reply to comment"
                     >
                         <FaReply /> Reply
@@ -163,14 +162,14 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
                         <>
                             <button
                                 onClick={() => setIsEditing(true)}
-                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#757575', fontSize: '0.8em', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#BDBDBD', fontSize: '0.8em', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
                                 aria-label="Edit comment"
                             >
                                 <FaPencilAlt /> Edit
                             </button>
                             <button
                                 onClick={handleDelete}
-                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#757575', fontSize: '0.8em', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#BDBDBD', fontSize: '0.8em', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
                                 aria-label="Delete comment"
                             >
                                 <FaTrash /> Delete
@@ -210,7 +209,7 @@ function CommentThread({ comment, profiles, currentUserId, onCommentChange, repl
 
             {/* The Replies */}
             {comment.replies && comment.replies.length > 0 && (
-                <div style={{ marginLeft: '20px', paddingLeft: '22px', borderLeft: '2px solid #3A3A3A', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ marginLeft: '20px', paddingLeft: '22px', borderLeft: '2px solid #4A4A4A', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {comment.replies.map(reply => (
                         <CommentThread
                             key={reply.id}
