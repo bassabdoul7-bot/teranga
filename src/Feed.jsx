@@ -76,10 +76,10 @@ function StoryUploaderModal({ session, onClose, onStoryUploaded }) {
 
     return (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ backgroundColor: '#2C2C2C', padding: '20px', borderRadius: '12px', width: '90%', maxWidth: '500px' }}>
+            <div style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '12px', width: '90%', maxWidth: '500px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <h2 style={{ color: 'white', margin: 0 }}>Add Your Story</h2>
-                    <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', fontSize: '24px', cursor: 'pointer' }}>&times;</button>
+                    <h2 style={{ color: '#121212', margin: 0 }}>Add Your Story</h2>
+                    <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#121212', fontSize: '24px', cursor: 'pointer' }}>&times;</button>
                 </div>
 
                 {previewUrl ? (
@@ -91,7 +91,7 @@ function StoryUploaderModal({ session, onClose, onStoryUploaded }) {
                         )}
                     </div>
                 ) : (
-                    <div style={{ height: '200px', border: '2px dashed #4A4A4A', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', color: '#757575', marginBottom: '20px' }}>
+                    <div style={{ height: '200px', border: '2px dashed #BDBDBD', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', color: '#757575', marginBottom: '20px' }}>
                         <FaImage style={{ fontSize: '40px', marginBottom: '10px' }} />
                         <p>Select a photo or video</p>
                     </div>
@@ -204,7 +204,7 @@ function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
         flexShrink: 0,
         overflow: 'hidden',
         boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-        backgroundColor: '#3A3A3A',
+        backgroundColor: '#DDDDDD', // Lighter background for stories on white
     };
     
     const mediaStyle = {
@@ -219,22 +219,22 @@ function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#E0E0E0',
+        color: '#4A4A4A', // Darker text for add story on white
     };
     // --- END STYLE CHANGES ---
 
     const storyUsernameStyle = {
         fontSize: '0.8em',
-        color: 'white',
+        color: '#121212', // Darker text for username on white
         fontWeight: 'bold',
         position: 'absolute',
         bottom: '8px',
         left: '8px',
-        textShadow: '0 1px 3px rgba(0,0,0,0.5)',
+        textShadow: '0 1px 3px rgba(255,255,255,0.5)', // Adjusted text shadow
     };
 
     return (
-        <div style={{ padding: '10px 0 15px 0', borderBottom: '1px solid #4A4A4A', marginBottom: '15px' }}>
+        <div style={{ padding: '10px 0 15px 0', borderBottom: '1px solid #BDBDBD', marginBottom: '15px' }}> {/* Lighter border */}
             <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingLeft: '15px' }}>
                 {/* Add Story Button */}
                 <div style={addStoryCard} onClick={onAddStory}>
@@ -351,10 +351,10 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
           <div 
             key={post.id} 
             style={{ 
-                backgroundColor: '#2C2C2C', // --- COLOR CHANGED ---
+                backgroundColor: '#FFFFFF', // --- COLOR CHANGED TO WHITE ---
                 borderRadius: '12px', 
                 marginBottom: '20px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Lighter shadow
                 overflow: 'hidden' // Keep media inside rounded corners
             }}
           >
@@ -367,12 +367,12 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                             {avatarUrl ? (
                                 <img src={avatarUrl} alt={username} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
                             ) : (
-                                <FaUserCircle style={{ fontSize: '40px', color: '#4A4A4A' }} />
+                                <FaUserCircle style={{ fontSize: '40px', color: '#BDBDBD' }} /> {/* Darker icon color */}
                             )}
                         </Link>
                         <div>
                             <Link to={`/profile/${post.user_id}`} style={{ textDecoration: 'none' }}>
-                                <p style={{ fontWeight: 'bold', margin: 0, fontSize: '1.0em', color: '#A6D1E6' }}>{username}</p>
+                                <p style={{ fontWeight: 'bold', margin: 0, fontSize: '1.0em', color: '#121212' }}>{username}</p> {/* Darker text */}
                             </Link>
                             <p style={{ margin: 0, fontSize: '0.8em', color: '#757575' }}>{postTimeAgo}</p>
                         </div>
@@ -416,7 +416,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                         </div>
                     </div>
                 ) : (
-                    <p style={{ margin: '0 0 10px 0', fontSize: '1.1em', wordWrap: 'break-word', color: '#E0E0E0' }}>{post.content}</p>
+                    <p style={{ margin: '0 0 10px 0', fontSize: '1.1em', wordWrap: 'break-word', color: '#121212' }}>{post.content}</p> {/* Darker text */}
                 )}
             </div>
             
@@ -445,7 +445,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
 
             {/* --- Actions/Comments are back inside padding --- */}
             <div style={{ padding: '0 15px 15px 15px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderTop: '1px solid #3A3A3A', paddingTop: '15px', marginTop: '15px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderTop: '1px solid #BDBDBD', paddingTop: '15px', marginTop: '15px' }}> {/* Lighter border */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                     <button
                       onClick={() => onLikeToggle(post.id, hasLiked)}
@@ -454,7 +454,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                     >
                       {hasLiked ? '❤️' : '🤍'}
                     </button>
-                    <span style={{ color: '#E0E0E0', fontSize: '0.9em' }}>{likeCount}</span>
+                    <span style={{ color: '#121212', fontSize: '0.9em' }}>{likeCount}</span> {/* Darker text */}
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -465,7 +465,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                      >
                         <FaRegCommentAlt />
                      </button>
-                     <span style={{ color: '#E0E0E0', fontSize: '0.9em' }}>{commentCount}</span>
+                     <span style={{ color: '#121212', fontSize: '0.9em' }}>{commentCount}</span> {/* Darker text */}
                   </div>
 
                   <button
@@ -535,7 +535,7 @@ function CreatePost({ userId, onPostCreated }) {
 
     // --- NEW: Wrapped CreatePost in a card ---
     return (
-        <div style={{ backgroundColor: '#2C2C2C', padding: '15px', borderRadius: '12px', marginBottom: '20px' }}>
+        <div style={{ backgroundColor: '#FFFFFF', padding: '15px', borderRadius: '12px', marginBottom: '20px' }}> {/* --- COLOR CHANGED TO WHITE --- */}
             <form onSubmit={handleSubmit}>
                 <textarea
                     placeholder="What's on your mind, Teranga?"
@@ -636,7 +636,7 @@ export default function Feed({ session }) {
   };
 
   if (loading && posts.length === 0 && stories.length === 0) {
-    return <div style={{ textAlign: 'center', marginTop: '50px', color: '#E0E0E0' }}>Loading...</div>;
+    return <div style={{ textAlign: 'center', marginTop: '50px', color: '#121212' }}>Loading...</div>; {/* Darker text */}
   }
 
   return (
@@ -659,9 +659,9 @@ export default function Feed({ session }) {
 
       {/* --- MODIFIED: Added padding here --- */}
       <div style={{ padding: '0 15px' }}>
-        <header style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px 0', paddingBottom: '10px', borderBottom: '1px solid #4A4A4A' }}>
+        <header style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px 0', paddingBottom: '10px', borderBottom: '1px solid #BDBDBD' }}> {/* Lighter border */}
           {/* --- MODIFIED: Changed title --- */}
-          <h1 style={{ color: '#E0E0E0', margin: 0, fontSize: '1.5em' }}>Community</h1>
+          <h1 style={{ color: '#121212', margin: 0, fontSize: '1.5em' }}>Community</h1> {/* Darker text */}
         </header>
       </div>
 
@@ -692,9 +692,9 @@ export default function Feed({ session }) {
       {/* --- NEW: Message if feed is empty --- */}
       {!loading && posts.length === 0 && (
           <div style={{ padding: '40px 15px', textAlign: 'center' }}>
-              <FaVideo style={{ fontSize: '40px', color: '#4A4A4A', marginBottom: '10px' }} />
-              <h3 style={{ color: 'white' }}>Welcome to the Community</h3>
-              <p style={{ color: '#BDBDBD' }}>Be the first to share a post or add to your story.</p>
+              <FaVideo style={{ fontSize: '40px', color: '#BDBDBD', marginBottom: '10px' }} /> {/* Darker icon */}
+              <h3 style={{ color: '#121212' }}>Welcome to the Community</h3> {/* Darker text */}
+              <p style={{ color: '#757575' }}>Be the first to share a post or add to your story.</p> {/* Darker text */}
           </div>
       )}
     </div>
