@@ -322,7 +322,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
     };
 
     return (
-        <div style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '6px' }}>
             {posts.map(post => {
                 if (!post || !post.id || !post.user_id) return null;
 
@@ -673,7 +673,7 @@ export default function Feed({ session }) {
             />
 
             {}
-            <div style={{ padding: '0 15px', marginTop: '20px' }}>
+            <div style={{ padding: '0 15px', marginTop: '6px' }}>
                 <CreatePost userId={session.user.id} onPostCreated={handleDataChange} />
             </div>
 

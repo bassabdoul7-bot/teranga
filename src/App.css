@@ -44,3 +44,34 @@ body {
 .read-the-docs {
   color: #888;
 }
+:root {
+  --font-primary: 'Inter', sans-serif;
+  --font-heading: 'Poppins', sans-serif;
+}
+
+body {
+  font-family: var(--font-primary);
+  font-size: 16px;
+  line-height: 1.6;
+  color: #E0E0E0;
+  background-color: #0B1724;
+}
+
+h1, h2, h3, h4, h5, h6,
+.username {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #A6D1E6;
+}
+
+.comment-text, .post-content {
+  font-family: var(--font-primary);
+  font-weight: 400;
+  color: #F1F1F1;
+}
+
+button {
+  font-family: var(--font-primary);
+  font-weight: 500;
+}

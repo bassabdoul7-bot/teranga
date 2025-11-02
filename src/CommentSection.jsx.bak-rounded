@@ -28,8 +28,8 @@ function AddComment({ postId, userId, parentId = null, onCommentAdded, onCancel 
       alert('Error: ' + error.message);
     } else {
       setContent('');
-      if (onCommentAdded) onCommentAdded();
-      if (onCancel) onCancel(); // close reply composer
+      onCommentAdded && onCommentAdded();
+      onCancel && onCancel(); // close reply box
     }
   };
 
@@ -41,11 +41,11 @@ function AddComment({ postId, userId, parentId = null, onCommentAdded, onCancel 
           display: 'flex',
           alignItems: 'center',
           width: '100%',
-          backgroundColor: 'rgba(255,255,255,0.08)',
-          border: '1px solid rgba(255,255,255,0.15)',
-          borderRadius: '9999px',
-          padding: '6px 10px',
-          minHeight: '44px'
+          backgroundColor: 'rgba(0,0,0,0.12)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '999px',
+          padding: '4px 6px',
+          gap: '6px',
         }}
       >
         <textarea
@@ -60,8 +60,8 @@ function AddComment({ postId, userId, parentId = null, onCommentAdded, onCancel 
             outline: 'none',
             color: '#FFFFFF',
             fontSize: '0.9rem',
-            padding: '4px 42px 4px 10px', // room for arrow
-            resize: 'none'
+            padding: '6px 44px 6px 12px', // space for arrow
+            resize: 'none',
           }}
         />
 
@@ -71,7 +71,7 @@ function AddComment({ postId, userId, parentId = null, onCommentAdded, onCancel 
           disabled={loading}
           style={{
             position: 'absolute',
-            right: '6px',
+            right: '8px',
             top: '50%',
             transform: 'translateY(-50%)',
             width: '30px',
@@ -90,18 +90,18 @@ function AddComment({ postId, userId, parentId = null, onCommentAdded, onCancel 
           ➤
         </button>
 
-        {/* only for reply composers */}
+        {/* only show on reply composer */}
         {onCancel && (
           <button
             type="button"
             onClick={onCancel}
             style={{
-              marginLeft: '8px',
               background: 'none',
               border: 'none',
               color: '#BDBDBD',
               fontSize: '0.75rem',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              marginLeft: '6px',
             }}
           >
             Cancel
@@ -121,7 +121,7 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
   const [editLoading, setEditLoading] = useState(false);
 
   const authorProfile = profiles[comment.user_id];
-  const username = authorProfile ? authorProfile.username || authorProfile.full_name : 'Unknown User';
+  const username = authorProfile ? (authorProfile.username || authorProfile.full_name) : 'Unknown User';
   const avatarUrl = authorProfile ? authorProfile.avatar_url : null;
   const isOwnComment = comment.user_id === currentUserId;
 
@@ -135,6 +135,7 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
     timeAgo = 'just now';
   }
 
+  // delete
   const handleDelete = async () => {
     if (!window.confirm('Delete this comment (and replies)?')) return;
     const { error } = await supabase.from('comments').delete().eq('id', comment.id);
@@ -145,6 +146,7 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
     }
   };
 
+  // edit save
   const handleEditSave = async () => {
     setEditLoading(true);
     const { error } = await supabase
@@ -177,14 +179,14 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
 
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* header */}
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <Link to={`/profile/${comment.user_id}`} style={{ textDecoration: 'none' }}>
             <p style={{ margin: 0, fontWeight: 600, color: '#A6D1E6' }}>{username}</p>
           </Link>
           <p style={{ margin: 0, fontSize: '0.75rem', color: '#BDBDBD' }}>{timeAgo}</p>
         </div>
 
-        {/* content */}
+        {/* body */}
         {isEditing ? (
           <div style={{ marginTop: 5 }}>
             <textarea
@@ -226,7 +228,9 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
             </div>
           </div>
         ) : (
-          <p style={{ margin: '4px 0 0 0', color: '#E0E0E0', wordBreak: 'break-word' }}>{comment.content}</p>
+          <p style={{ margin: '4px 0 0 0', color: '#E0E0E0', wordBreak: 'break-word' }}>
+            {comment.content}
+          </p>
         )}
 
         {/* actions */}
@@ -272,14 +276,7 @@ function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyCli
 /* -------------------------------------------------
    RECURSIVE THREAD
 -------------------------------------------------- */
-function CommentThread({
-  comment,
-  profiles,
-  currentUserId,
-  onCommentChange,
-  replyingToId,
-  setReplyingToId
-}) {
+function CommentThread({ comment, profiles, currentUserId, onCommentChange, replyingToId, setReplyingToId }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <Comment
@@ -290,7 +287,7 @@ function CommentThread({
         onReplyClick={() => setReplyingToId(replyingToId === comment.id ? null : comment.id)}
       />
 
-      {/* reply box for this comment */}
+      {/* reply box under this comment */}
       {replyingToId === comment.id && (
         <div style={{ marginLeft: 42 }}>
           <AddComment
@@ -333,7 +330,7 @@ function CommentThread({
 }
 
 /* -------------------------------------------------
-   MAIN EXPORT
+   MAIN EXPORT  👈 THIS WAS MISSING / BROKEN
 -------------------------------------------------- */
 export default function CommentSection({ postId, userId, onCommentChange, onClose }) {
   const [comments, setComments] = useState([]);
@@ -355,13 +352,11 @@ export default function CommentSection({ postId, userId, onCommentChange, onClos
       return;
     }
 
-    // build map
     const byId = {};
     data.forEach((c) => {
       byId[c.id] = { ...c, replies: [] };
     });
 
-    // build tree
     const roots = [];
     data.forEach((c) => {
       if (c.parent_id && byId[c.parent_id]) {
@@ -371,7 +366,6 @@ export default function CommentSection({ postId, userId, onCommentChange, onClos
       }
     });
 
-    // fetch profiles
     const userIds = [...new Set(data.map((c) => c.user_id))];
     const { data: profileData } = await supabase
       .from('profiles')
@@ -388,7 +382,7 @@ export default function CommentSection({ postId, userId, onCommentChange, onClos
     setProfiles(profMap);
     setComments(roots);
     setLoading(false);
-    if (onCommentChange) onCommentChange();
+    onCommentChange && onCommentChange();
   };
 
   useEffect(() => {
@@ -418,8 +412,13 @@ export default function CommentSection({ postId, userId, onCommentChange, onClos
             ))
           )}
 
-          {/* main composer at the bottom */}
-          <AddComment postId={postId} userId={userId} onCommentAdded={fetchComments} />
+          {/* main comment at the very bottom */}
+          <AddComment
+            postId={postId}
+            userId={userId}
+            parentId={null}
+            onCommentAdded={fetchComments}
+          />
         </div>
       )}
 
