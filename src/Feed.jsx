@@ -194,12 +194,12 @@ function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
         return acc;
     }, {});
 
-    // --- STYLES CHANGED TO RECTANGLE ---
+    // --- STYLES CHANGED TO BE BIGGER ---
     const storyCardStyle = {
         position: 'relative',
         cursor: 'pointer',
-        width: '100px', // Bigger width
-        height: '160px', // Bigger height
+        width: '110px', // Bigger width
+        height: '180px', // Bigger height
         borderRadius: '8px',
         flexShrink: 0,
         overflow: 'hidden',
