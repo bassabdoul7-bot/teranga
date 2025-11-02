@@ -112,16 +112,23 @@ function StoryUploaderModal({ session, onClose, onStoryUploaded }) {
     );
 }
 
-// --- NEW: Story Viewer Modal ---
+// --- NEW: Story Viewer Modal (MODIFIED FOR CLEANER LOOK) ---
 function StoryViewerModal({ stories, profiles, onClose }) {
     const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
 
-    const nextStory = () => setCurrentStoryIndex(i => (i + 1 >= stories.length ? i : i + 1));
+    const nextStory = () => setCurrentStoryIndex(i => {
+        if (i + 1 >= stories.length) {
+            onClose(); // Close modal when last story finishes
+            return i;
+        }
+        return i + 1;
+    });
+    
     const prevStory = () => setCurrentStoryIndex(i => (i - 1 < 0 ? 0 : i - 1));
 
+    // Auto-advance timer for images
     useEffect(() => {
-        const currentStory = stories[currentStoryIndex];
-        if (currentStory && currentStory.media_type === 'image') {
+        if (stories[currentStoryIndex] && stories[currentStoryIndex].media_type === 'image') {
             const timer = setTimeout(nextStory, 5000); // 5 seconds for images
             return () => clearTimeout(timer);
         }
@@ -130,46 +137,37 @@ function StoryViewerModal({ stories, profiles, onClose }) {
     if (!stories || stories.length === 0) return null;
 
     const currentStory = stories[currentStoryIndex];
-    const profile = profiles[currentStory.user_id];
 
     return (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: '#000', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* Story Content */}
-            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: '#000', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={onClose}>
+            {/* Story Content (Stop propagation so clicking video doesn't close modal) */}
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={(e) => e.stopPropagation()}>
                 {currentStory.media_type === 'image' ? (
                     <img src={currentStory.media_url} style={{ width: '100%', maxWidth: '450px', objectFit: 'contain' }} />
                 ) : (
                     <video 
-                        key={currentStory.id} // Add key to force re-render
+                        key={currentStory.id} // Forces re-render on story change
                         src={currentStory.media_url} 
                         autoPlay 
                         muted 
                         playsInline
-                        onEnded={nextStory}
+                        onEnded={nextStory} // Auto-advance on video end
                         style={{ width: '100%', maxWidth: '450px' }}
+                        // Removed 'controls'
                     />
                 )}
             </div>
 
-            {/* Click handlers for next/prev */}
-            <div onClick={prevStory} style={{ position: 'absolute', left: 0, top: 0, width: '30%', height: '100%' }}></div>
-            <div onClick={nextStory} style={{ position: 'absolute', right: 0, top: 0, width: '70%', height: '100%' }}></div>
+            {/* Click handlers for next/prev (Stop propagation) */}
+            <div onClick={(e) => { e.stopPropagation(); prevStory(); }} style={{ position: 'absolute', left: 0, top: 0, width: '30%', height: '100%' }}></div>
+            <div onClick={(e) => { e.stopPropagation(); nextStory(); }} style={{ position: 'absolute', right: 0, top: 0, width: '70%', height: '100%' }}></div>
 
-            {/* Header / Info */}
+            {/* Header / Info (MODIFIED) */}
             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', padding: '10px', boxSizing: 'border-box', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%)' }}>
-                <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', fontSize: '24px', cursor: 'pointer', position: 'absolute', top: '15px', right: '15px' }}>
-                    &times;
-                </button>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px' }}>
-                    {profile?.avatar_url ? (
-                        <img src={profile.avatar_url} alt={profile.username} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
-                    ) : (
-                        <FaUserCircle style={{ fontSize: '40px', color: '#4A4A4A' }} />
-                    )}
-                    <span style={{ color: 'white', fontWeight: 'bold' }}>{profile?.username}</span>
-                </div>
-                {/* Progress Bars */}
-                <div style={{ display: 'flex', gap: '3px', padding: '0 10px' }}>
+                {/* Exit Button and User Info REMOVED */}
+                
+                {/* Progress Bars (Kept) */}
+                <div style={{ display: 'flex', gap: '3px', padding: '10px 10px 0 10px' }}>
                     {stories.map((story, index) => (
                         <div key={story.id} style={{ flex: 1, height: '3px', borderRadius: '2px', backgroundColor: index <= currentStoryIndex ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)' }} />
                     ))}
@@ -206,6 +204,7 @@ function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
         flexShrink: 0,
         overflow: 'hidden',
         boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+        backgroundColor: '#3A3A3A',
     };
     
     const mediaStyle = {
@@ -220,7 +219,6 @@ function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#3A3A3A',
         color: '#E0E0E0',
     };
     // --- END STYLE CHANGES ---
