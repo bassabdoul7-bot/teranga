@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { Link } from 'react-router-dom';
 
@@ -62,12 +62,12 @@ export default function Rates({ session }) {
 
     return (
         <div style={{ maxWidth: '600px', margin: '0 auto', padding: '15px' }}>
-            {}
+            {/* Header */}
             <header style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px', paddingBottom: '10px', borderBottom: '1px solid #4A4A4A' }}>
                 <h1 style={{ color: '#E0E0E0', margin: 0, fontSize: '1.5em' }}>Send Money</h1>
             </header>
 
-            {}
+            {/* --- NEW: Mid-Market Rate Display --- */}
             <div style={{ textAlign: 'center', margin: '-10px 0 20px 0', padding: '5px', backgroundColor: '#1E1E1E', borderRadius: '6px' }}>
                 {loading || !midMarketRate ? (
                     <p style={{ color: '#757575', fontSize: '0.9em', margin: 0 }}>Fetching mid-market rate...</p>
@@ -77,11 +77,11 @@ export default function Rates({ session }) {
                     </p>
                 )}
             </div>
-            {}
+            {/* --- End New Display --- */}
 
 
-            {}
-            <div style={{ marginBottom: '30px', padding: '20px', backgroundColor: '#1E1E1E' }}>
+            {/* 1. Input Section */}
+            <div style={{ marginBottom: '30px', padding: '20px', backgroundColor: '#1E1E1E', borderRadius: '12px' }}>
                 <label htmlFor="sendAmount" style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: '#BDBDBD' }}>
                     You Send (USD)
                 </label>
@@ -96,7 +96,7 @@ export default function Rates({ session }) {
                 />
             </div>
 
-            {}
+            {/* 2. Comparison Results */}
             <h2 style={{ color: '#E0E0E0', margin: '30px 0 10px 0', borderBottom: '1px solid #4A4A4A', paddingBottom: '5px' }}>Comparison Results</h2>
 
             {loading ? (
@@ -166,7 +166,3 @@ export default function Rates({ session }) {
         </div>
     );
 }
-
-
-
-

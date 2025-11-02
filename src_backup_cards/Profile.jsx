@@ -235,7 +235,7 @@ export default function Profile({ session, setSession }) {
   return (
     <div style={{ maxWidth: '600px', margin: '30px auto', padding: '15px' }}>
 
-        {}
+        {/* Header Area */}
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '25px' }}>
             <Link to="/feed" className="btn btn-muted" style={{ width: 'auto', padding: '8px 12px', marginRight: 'auto' }}>
                 &larr; Back
@@ -243,16 +243,16 @@ export default function Profile({ session, setSession }) {
             <h2 style={{ margin: '0 auto 0 auto', color: '#FFFFFF', textAlign: 'center' }}>
                 {isOwnProfile ? 'My Account' : (profileData.username || 'User Profile')}
             </h2>
-              <div style={{width: '60px'}}></div> {}
+              <div style={{width: '60px'}}></div> {/* Spacer */}
         </div>
 
-        {}
-        <div style={{ backgroundColor: '#1E1E1E', padding: '25px', marginBottom: '30px' }}>
+        {/* --- Profile Card --- */}
+        <div style={{ backgroundColor: '#1E1E1E', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', marginBottom: '30px' }}>
             {loading ? (
                   <p style={{textAlign: 'center', color: '#BDBDBD'}}>Loading profile...</p>
             ) : (
                 <>
-                    {}
+                    {/* Avatar Component */}
                     <Avatar
                         url={profileData.avatar_url}
                         size={120}
@@ -260,10 +260,10 @@ export default function Profile({ session, setSession }) {
                         onUpload={isOwnProfile ? handleAvatarUpload : null}
                     />
 
-                    {}
+                    {/* IF OWN PROFILE: Show Edit Form */}
                     {isOwnProfile && (
                         <form onSubmit={updateProfile} style={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: '20px' }}>
-                            {}
+                            {/* ... (Email, Username, Full Name inputs) ... */}
                             <div>
                                 <label htmlFor="email" style={{ display: 'block', marginBottom: '6px', fontSize: '0.9em', color: '#BDBDBD' }}>Email</label>
                                 <input id="email" type="text" value={session.user.email} disabled style={{ width: '100%', padding: '10px', boxSizing: 'border-box', backgroundColor: '#3A3A3A', color: '#BDBDBD', border: '1px solid #4A4A4A', borderRadius: '6px', cursor: 'not-allowed' }} />
@@ -284,13 +284,13 @@ export default function Profile({ session, setSession }) {
                         </form>
                     )}
 
-                    {}
+                    {/* --- IF OTHER'S PROFILE: Show Info & Action Buttons --- */}
                     {!isOwnProfile && (
                         <div style={{ textAlign: 'center', marginTop: '10px' }}>
                             <h3 style={{ color: '#FFFFFF', margin: '10px 0 0 0' }}>{profileData.username || '...'}</h3>
                             <p style={{ color: '#BDBDBD', margin: '5px 0 20px 0' }}>{profileData.full_name || ''}</p>
 
-                            {}
+                            {/* Action Button Container */}
                             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                                 <button
                                     onClick={handleFollowToggle}
@@ -315,9 +315,9 @@ export default function Profile({ session, setSession }) {
             )}
         </div>
         
-        {}
+        {/* --- NEW: Manage Business Card (Only for own profile) --- */}
         {isOwnProfile && (
-            <div style={{ backgroundColor: '#1E1E1E', padding: '25px', marginBottom: '30px' }}>
+            <div style={{ backgroundColor: '#1E1E1E', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', marginBottom: '30px' }}>
                 <h3 style={{ color: '#FFFFFF', margin: '0 0 20px 0', textAlign: 'center' }}>
                     {businessData ? 'Edit My Business' : 'Register My Business'}
                 </h3>
@@ -332,16 +332,16 @@ export default function Profile({ session, setSession }) {
                 )}
             </div>
         )}
-        {}
+        {/* --- END OF NEW CARD --- */}
 
-        {}
+        {/* --- Logout Button (Only for own profile) --- */}
         {isOwnProfile && (
             <button type="button" onClick={handleLogout} className="btn btn-destructive" style={{ marginTop: '30px' }}>
                 Logout
             </button>
         )}
 
-        {}
+        {/* --- User's Post Feed (Show for BOTH) --- */}
         <div style={{ marginTop: '30px' }}>
             <h2 style={{ color: '#E0E0E0', borderBottom: '1px solid #4A4A4A', paddingBottom: '5px' }}>
                 Posts
@@ -362,7 +362,3 @@ export default function Profile({ session, setSession }) {
     </div>
   );
 }
-
-
-
-

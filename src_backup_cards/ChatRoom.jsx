@@ -183,7 +183,7 @@ export default function ChatRoom({ session }) {
 
     return (
         <div style={{ maxWidth: '600px', margin: '0 auto', padding: '15px', height: 'calc(100vh - 90px)', display: 'flex', flexDirection: 'column' }}>
-            {}
+            {/* Header */}
             <header style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', paddingBottom: '10px', borderBottom: '1px solid #4A4A4A', flexShrink: 0 }}>
                 <Link to="/chat" className="btn btn-muted" style={{ width: 'auto', padding: '8px 12px', marginRight: 'auto' }}>
                     ← Back to Chats
@@ -191,10 +191,10 @@ export default function ChatRoom({ session }) {
                 <h1 style={{ color: '#E0E0E0', margin: '0 auto', fontSize: '1.2em' }}>
                     Chat Room
                 </h1>
-                <div style={{width: '60px'}}></div> {}
+                <div style={{width: '60px'}}></div> {/* Spacer */}
             </header>
             
-            {}
+            {/* Message List */}
             <div style={{ flexGrow: 1, overflowY: 'auto', padding: '0 10px' }}>
                 {loading && <p style={{ color: '#A0AEC0', textAlign: 'center' }}>Loading messages...</p>}
                 {!loading && messages.map(msg => {
@@ -208,11 +208,11 @@ export default function ChatRoom({ session }) {
                         />
                     );
                 })}
-                {}
+                {/* This empty div is the target for auto-scrolling */}
                 <div ref={messagesEndRef} />
             </div>
 
-            {}
+            {/* Send Message Form */}
             <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '10px', marginTop: '10px', flexShrink: 0 }}>
                 <input
                     type="text"
@@ -234,7 +234,3 @@ export default function ChatRoom({ session }) {
         </div>
     );
 }
-
-
-
-

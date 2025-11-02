@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { RiShareForwardLine } from 'react-icons/ri';
 import { FaRegCommentAlt, FaTrash, FaImage, FaUserCircle, FaStore, FaPencilAlt, FaPlus, FaArrowLeft, FaVideo, FaRegHeart, FaHeart } from 'react-icons/fa';
@@ -76,15 +76,15 @@ function StoryUploaderModal({ session, onClose, onStoryUploaded }) {
 
     return (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {}
-            <div style={{ padding: '20px', width: '90%', maxWidth: '500px' }}>
-                {}
+            {/* Modal Content */}
+            <div style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '12px', width: '90%', maxWidth: '500px' }}>
+                {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <h2 style={{ color: '#FFFFFF', margin: 0 }}>Add Your Story</h2>
+                    <h2 style={{ color: '#000000', margin: 0 }}>Add Your Story</h2>
                     <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#555555', fontSize: '24px', cursor: 'pointer' }}>&times;</button>
                 </div>
 
-                {}
+                {/* Preview or Placeholder */}
                 {previewUrl ? (
                     <div style={{ marginBottom: '20px' }}>
                         {mediaType === 'image' ? (
@@ -100,7 +100,7 @@ function StoryUploaderModal({ session, onClose, onStoryUploaded }) {
                     </div>
                 )}
 
-                {}
+                {/* File Input */}
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="story-upload" className="btn btn-secondary" style={{ width: '100%', textDecoration: 'none' }}>
                         {mediaFile ? `Selected: ${mediaFile.name}` : 'Choose Photo/Video'}
@@ -108,7 +108,7 @@ function StoryUploaderModal({ session, onClose, onStoryUploaded }) {
                     <input id="story-upload" type="file" accept="image/png, image/jpeg, video/mp4, video/quicktime" onChange={handleFileChange} disabled={loading} style={{ display: 'none' }} />
                 </div>
 
-                {}
+                {/* Upload Button */}
                 <button onClick={handleUpload} disabled={!mediaFile || loading} className="btn btn-primary" style={{ width: '100%' }}>
                     {loading ? 'Uploading...' : 'Post Story'}
                 </button>
@@ -145,7 +145,7 @@ function StoryViewerModal({ stories, profiles, onClose }) {
 
     return (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: '#000', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={onClose}>
-            {}
+            {/* Story Content (Stop propagation so clicking video doesn't close modal) */}
             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={(e) => e.stopPropagation()}>
                 {currentStory.media_type === 'image' ? (
                     <img src={currentStory.media_url} style={{ width: '100%', maxWidth: '450px', objectFit: 'contain' }} />
@@ -163,15 +163,15 @@ function StoryViewerModal({ stories, profiles, onClose }) {
                 )}
             </div>
 
-            {}
+            {/* Click handlers for next/prev (Stop propagation) */}
             <div onClick={(e) => { e.stopPropagation(); prevStory(); }} style={{ position: 'absolute', left: 0, top: 0, width: '30%', height: '100%' }}></div>
             <div onClick={(e) => { e.stopPropagation(); nextStory(); }} style={{ position: 'absolute', right: 0, top: 0, width: '70%', height: '100%' }}></div>
 
-            {}
+            {/* Header / Info (MODIFIED) */}
             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', padding: '10px', boxSizing: 'border-box', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%)' }}>
-                {}
+                {/* Exit Button and User Info REMOVED */}
 
-                {}
+                {/* Progress Bars (Kept) */}
                 <div style={{ display: 'flex', gap: '3px', padding: '10px 10px 0 10px' }}>
                     {stories.map((story, index) => (
                         <div key={story.id} style={{ flex: 1, height: '3px', borderRadius: '2px', backgroundColor: index <= currentStoryIndex ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)' }} />
@@ -208,6 +208,7 @@ function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
         borderRadius: '8px',
         flexShrink: 0,
         overflow: 'hidden',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
         backgroundColor: '#3A3A3A',
     };
 
@@ -238,15 +239,15 @@ function StoryReel({ stories, profiles, onAddStory, onViewStory }) {
     };
 
     return (
-        <div style={{ padding: '10px 0 15px 0', borderBottom: '1px solid #4A4A4A', marginBottom: '25px' }}>
+        <div style={{ padding: '10px 0 15px 0', borderBottom: '1px solid #4A4A4A', marginBottom: '15px' }}>
             <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingLeft: '15px' }}>
-                {}
+                {/* Add Story Button */}
                 <div style={addStoryCard} onClick={onAddStory}>
                     <FaPlus style={{ fontSize: '24px', marginBottom: '8px' }} />
                     <span style={{ fontSize: '0.8em' }}>Add Story</span>
                 </div>
 
-                {}
+                {/* Other users' stories */}
                 {Object.values(storiesByUser).map(({ profile, stories }) => {
                     if (!profile || stories.length === 0) return null;
                     const latestStory = stories[stories.length - 1]; // Show the newest story
@@ -351,13 +352,16 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                     <div
                         key={post.id}
                         style={{
+                            backgroundColor: '#FFFFFF',
+                            borderRadius: '12px',
                             marginBottom: '20px',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                             overflow: 'hidden'
                         }}
                     >
-                        {}
+                        {/* All post content now lives inside the card */}
                         <div style={{ padding: '15px' }}>
-                            {}
+                            {/* Post Author Info + Edit/Delete Buttons */}
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <Link to={`/profile/${post.user_id}`}>
@@ -371,7 +375,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                                         <Link to={`/profile/${post.user_id}`} style={{ textDecoration: 'none' }}>
                                             <p style={{ fontWeight: 'bold', margin: 0, fontSize: '1.0em', color: '#0056b3' }}>{username}</p>
                                         </Link>
-                                        <p style={{ margin: 0, fontSize: '0.8em', color: '#FFFFFF' }}>{postTimeAgo}</p>
+                                        <p style={{ margin: 0, fontSize: '0.8em', color: '#333333' }}>{postTimeAgo}</p>
                                     </div>
                                 </div>
 
@@ -379,7 +383,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                         <button
                                             onClick={() => handleEditClick(post)}
-                                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#FFFFFF', fontSize: '0.9em', height: 'fit-content' }}
+                                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#333333', fontSize: '0.9em', height: 'fit-content' }}
                                             aria-label="Edit post"
                                         >
                                             <FaPencilAlt />
@@ -400,7 +404,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                                     <textarea
                                         value={editingContent}
                                         onChange={(e) => setEditingContent(e.target.value)}
-                                        style={{ width: '100%', minHeight: '80px', padding: '10px', boxSizing: 'border-box', borderRadius: '6px', border: '1px solid #BDBDBD', resize: 'vertical', color: '#FFFFFF' }}
+                                        style={{ width: '100%', minHeight: '80px', padding: '10px', boxSizing: 'border-box', borderRadius: '6px', border: '1px solid #BDBDBD', resize: 'vertical', backgroundColor: '#FFFFFF', color: '#000000' }}
                                         disabled={editLoading}
                                     />
                                     <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
@@ -414,11 +418,11 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                                 </div>
                             ) : (
                                 // --- THIS IS THE FIX: color is now #000000 ---
-                                <p style={{ margin: '0 0 10px 0', fontSize: '1.1em', wordWrap: 'break-word', color: '#FFFFFF' }}>{post.content}</p>
+                                <p style={{ margin: '0 0 10px 0', fontSize: '1.1em', wordWrap: 'break-word', color: '#000000' }}>{post.content}</p>
                             )}
                         </div>
 
-                        {}
+                        {/* --- Media (No Change) --- */}
                         {post.image_url && (
                             post.media_type === 'video'
                                 ? (
@@ -441,9 +445,9 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                                 )
                         )}
 
-                        {}
+                        {/* --- Actions/Comments --- */}
                         <div style={{ padding: '0 15px 15px 15px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px',  paddingTop: '15px', marginTop: '15px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderTop: '1px solid #EEEEEE', paddingTop: '15px', marginTop: '15px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                                     <button
                                         onClick={() => onLikeToggle(post.id, hasLiked)}
@@ -452,19 +456,19 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                                     >
                                         {hasLiked ? <FaHeart /> : <FaRegHeart />}
                                     </button>
-                                    <span style={{ color: '#FFFFFF', fontSize: '0.9em' }}>{likeCount}</span>
+                                    <span style={{ color: '#333333', fontSize: '0.9em' }}>{likeCount}</span>
                                 </div>
 
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                                     <button
                                         onClick={() => toggleComments(post.id)}
-                                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px', fontSize: '1.1em', color: '#FFFFFF' }}
+                                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px', fontSize: '1.1em', color: '#333333' }}
                                         aria-label="Toggle comments"
                                     >
                                         <FaRegCommentAlt />
                                     </button>
-                                    {}
-                                    <span style={{ color: '#FFFFFF', fontSize: '0.9em' }}>{commentCount}</span>
+                                    {/* --- THIS IS THE FIX: No more "De" --- */}
+                                    <span style={{ color: '#333333', fontSize: '0.9em' }}>{commentCount}</span>
                                 </div>
 
                                 <button
@@ -477,7 +481,7 @@ function PostList({ posts, profiles, userLikes, onLikeToggle, currentUserId, onD
                                 </button>
                             </div>
 
-                            {}
+                            {/* --- Comment Section --- */}
                             {isExpanded && <CommentSection postId={post.id} userId={currentUserId} onCommentChange={onDataChange} onClose={() => toggleComments(post.id)} />}
                         </div>
                     </div>
@@ -535,7 +539,7 @@ function CreatePost({ userId, onPostCreated }) {
 
     // --- STYLES CHANGED FOR WHITE CARD ---
     return (
-        <div style={{ padding: '15px', marginBottom: '20px' }}>
+        <div style={{ backgroundColor: '#FFFFFF', padding: '15px', borderRadius: '12px', marginBottom: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
             <form onSubmit={handleSubmit}>
                 <textarea
                     placeholder="What's on your mind, Teranga?"
@@ -543,9 +547,9 @@ function CreatePost({ userId, onPostCreated }) {
                     onChange={(e) => setContent(e.target.value)}
                     rows="3"
                     disabled={loading}
-                    style={{ width: '100%', padding: '12px', boxSizing: 'border-box', marginBottom: '10px', borderRadius: '6px', border: '1px solid #DDDDDD', resize: 'vertical', backgroundColor: '#F9F9F9', color: '#FFFFFF' }} // --- FIXED ---
+                    style={{ width: '100%', padding: '12px', boxSizing: 'border-box', marginBottom: '10px', borderRadius: '6px', border: '1px solid #DDDDDD', resize: 'vertical', backgroundColor: '#F9F9F9', color: '#000000' }} // --- FIXED ---
                 />
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px', marginBottom: '25px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
                     <label htmlFor="media-upload" style={{ cursor: 'pointer', color: '#007BFF' }}>
                         <FaImage style={{ fontSize: '1.5em', verticalAlign: 'middle' }} />
                         <span style={{ fontSize: '0.9em', marginLeft: '5px' }}>
@@ -641,7 +645,7 @@ export default function Feed({ session }) {
 
     return (
         <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0' }}>
-            {}
+            {/* --- NEW: Render Modals --- */}
             {showUploaderModal && (
                 <StoryUploaderModal
                     session={session}
@@ -657,10 +661,10 @@ export default function Feed({ session }) {
                 />
             )}
 
-            {}
+            {/* --- MODIFIED: Added padding here --- */}
             <div style={{ padding: '0 15px' }}>
                 <header style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px 0', paddingBottom: '10px', borderBottom: '1px solid #4A4A4A' }}>
-                    {}
+                    {/* --- MODIFIED: Changed title --- */}
                     <h1 style={{ color: '#E0E0E0', margin: 0, fontSize: '1.5em' }}>Community</h1>
                 </header>
             </div>
@@ -672,12 +676,12 @@ export default function Feed({ session }) {
                 onViewStory={(userStories) => setViewingUserStories(userStories)}
             />
 
-            {}
+            {/* --- MODIFIED: Added padding and new Card wrapper --- */}
             <div style={{ padding: '0 15px', marginTop: '20px' }}>
                 <CreatePost userId={session.user.id} onPostCreated={handleDataChange} />
             </div>
 
-            {}
+            {/* --- MODIFIED: Added padding here --- */}
             <div style={{ padding: '0 15px' }}>
                 <PostList
                     posts={posts}
@@ -689,7 +693,7 @@ export default function Feed({ session }) {
                 />
             </div>
 
-            {}
+            {/* --- NEW: Message if feed is empty --- */}
             {!loading && posts.length === 0 && (
                 <div style={{ padding: '40px 15px', textAlign: 'center' }}>
                     <FaVideo style={{ fontSize: '40px', color: '#4A4A4A', marginBottom: '10px' }} />
@@ -700,10 +704,3 @@ export default function Feed({ session }) {
         </div>
     );
 }
-
-
-
-
-
-
-

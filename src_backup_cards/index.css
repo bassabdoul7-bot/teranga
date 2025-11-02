@@ -1,0 +1,249 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap');
+
+/* --- Vite Default Styles --- */
+:root {
+  font-family: 'Plus Jakarta Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark; /* Force dark scheme */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- NEW: Deep Blue/Teal Gradient --- */
+body {
+  /* New Gradient Background */
+  background: radial-gradient(ellipse at center, #1a3a4a 0%, #121a2a 100%);
+  background-attachment: fixed; /* Stops gradient from scrolling */
+
+  color: #E0E0E0; /* Light Gray text */
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* Links are now Light Blue */
+a {
+  color: #A6D1E6; /* Light Cool Blue */
+  text-decoration: none;
+}
+a:hover {
+  color: #FFFFFF; /* White on hover */
+  text-decoration: underline;
+}
+
+/* --- Dark Theme Component Variables (NEW BLUE THEME) --- */
+:root {
+    /* Input/Form Colors */
+    --colors-inputBackground: #2C2C2C !important; /* Standard Dark Gray */
+    --colors-inputBorder: #4A4A4A !important; /* Medium Gray border */
+    --colors-inputBorderHover: #616161 !important; /* Lighter Gray */
+    --colors-inputBorderFocus: #A6D1E6 !important; /* Light Blue focus */
+    --colors-inputText: #FFFFFF !important;
+    --colors-inputPlaceholder: #FFFFFF !important;
+    --colors-inputLabelText: #BDBDBD !important;
+
+    /* Brand/Button Colors (Primary = Light Blue) */
+    --colors-brand: #A6D1E6 !important;
+    --colors-brandAccent: #FFFFFF !important; /* White for hover */
+    --colors-brandButtonText: #121212 !important; /* Black text for contrast */
+
+    /* Anchor Link Colors (Light Blue) */
+    --colors-anchorTextColor: #A6D1E6 !important;
+    --colors-anchorTextHoverColor: #FFFFFF !important;
+}
+
+/* Auth Component Styles */
+.supabase-auth-ui_ui-label,
+.supabase-auth-ui_ui-anchor a,
+.supabase-auth-ui_ui-message {
+    color: var(--colors-inputLabelText) !important;
+}
+.supabase-auth-ui_ui-message {
+      background-color: #1E1E1E !important;
+      border-color: #4A4A4A !important;
+      color: #E0E0E0 !important;
+}
+/* Style social login buttons */
+.supabase-auth-ui_ui-button[type='button'] {
+    background-color: #2C2C2C !important;
+    color: #E0E0E0 !important;
+    border: 1px solid #4A4A4A !important;
+}
+.supabase-auth-ui_ui-button[type='button']:hover {
+    background-color: #3A3A3A !important;
+}
+
+
+/* --- Input Autofill & Background Fix (For Dark Theme) --- */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #2C2C2C inset !important; /* Match input background */
+    -webkit-text-fill-color: #FFFFFF !important; /* Force light text */
+    caret-color: #FFFFFF !important;
+}
+
+/* --- EXPLICIT OVERRIDE for Post/Comment Textareas --- */
+/* Target specific textareas to be white */
+form textarea[placeholder*="What's on your mind"],
+form textarea[placeholder*="Write a comment"] {
+  background-color: #FFFFFF !important; /* White background */
+  color: #121212 !important; /* Black text */
+  border-color: #BDBDBD !important; /* Medium gray border */
+}
+/* Target placeholders specifically for these textareas */
+form textarea[placeholder*="What's on your mind"]::placeholder,
+form textarea[placeholder*="Write a comment"]::placeholder {
+  color: #757575 !important; /* Medium Gray placeholder */
+  opacity: 1 !important;
+}
+/* Adjust autofill specifically for these textareas */
+form textarea[placeholder*="What's on your mind"]:-webkit-autofill,
+form textarea[placeholder*="Write a comment"]:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important; /* Force white background */
+    -webkit-text-fill-color: #121212 !important; /* Force black text */
+    caret-color: #121212 !important;
+}
+
+
+/* --- Fancy Button Styles (NEW BLUE THEME) --- */
+.btn {
+  padding: 12px 18px; border: none; border-radius: 8px; font-weight: bold; font-size: 1em;
+  cursor: pointer; width: 100%; text-align: center; text-decoration: none; display: inline-block;
+  box-sizing: border-box; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Darker shadow */
+}
+.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5); }
+.btn:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Primary Button (Light Blue) */
+.btn-primary {
+  background: #A6D1E6; /* Light Cool Blue */
+  color: #121212; /* Black Text */
+}
+.btn-primary:hover:not(:disabled) {
+  background: #FFFFFF; /* White */
+  color: #121212;
+}
+
+/* Secondary Button (Ghost) */
+.btn-secondary {
+  background: transparent;
+  color: #A6D1E6 !important; /* Light Blue text */
+  border: 1px solid #A6D1E6;
+  box-shadow: none;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: #A6D1E6;
+  color: #121212 !important; /* Black text */
+}
+
+/* Destructive Button (Dark with Red Text/Border) */
+.btn-destructive {
+  background: #2C2C2C;
+  color: #FF6B6B !important; /* Soft Red Text */
+  border: 1px solid #FF6B6B;
+  box-shadow: none;
+}
+.btn-destructive:hover:not(:disabled) {
+  background: #3A3A3A;
+  border-color: #FF8A80;
+  color: #FF8A80 !important;
+}
+
+/* Muted Button (Slightly Lighter Dark Gray) */
+.btn-muted {
+  background: #3A3A3A !important;
+  color: #BDBDBD !important; /* Lighter Gray Text */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.btn-muted:hover:not(:disabled) {
+  background: #4A4A4A !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* --- Override Supabase Auth Button to match btn-primary (Light Blue) --- */
+.supabase-auth-ui_ui-button[type='submit'] {
+  padding: 12px 18px !important; border: none !important; border-radius: 8px !important; font-weight: bold !important;
+  font-size: 1em !important; cursor: pointer !important; width: 100% !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4) !important;
+  background: #A6D1E6 !important; /* Light Cool Blue */
+  color: #121212 !important; /* Black Text */
+}
+.supabase-auth-ui_ui-button[type='submit']:hover:not(:disabled) {
+  transform: translateY(-2px) !important; box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5) !important;
+  background: #FFFFFF !important; /* White */
+}
+
+/* --- Bottom Navigation Dark Theme --- */
+nav {
+    background-color: #121a2a !important; /* MATCHES GRADIENT EDGE */
+    border-top: 1px solid #1a3a4a !important; /* Use gradient center color for border */
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.4) !important;
+}
+nav a {
+    color: #757575 !important;
+    font-weight: normal !important;
+    font-size: 0.8em !important;
+}
+/* Active link uses Primary Light Blue */
+nav a[style*="font-weight: bold"]
+ {
+    color: #A6D1E6 !important; /* Light Cool Blue for active */
+    font-weight: bold !important;
+}
+nav a:not([style*="font-weight: bold"]) {
+     color: #757575 !important;
+     font-weight: normal !important;
+}
+
+
+/* --- Feed Specific Styles (FIX: REMOVED !IMPORTANT) --- */
+/* Titles */
+header h1, h2 {
+    color: #FFFFFF !important; /* White Title */
+}
+/* Base paragraph text */
+p {
+    color: #E0E0E0; /* Light Gray - !important REMOVED */
+}
+/* Post author name */
+p[style*="font-weight: bold"] {
+    color: #A6D1E6; /* Light Cool Blue - !important REMOVED */
+}
+/* Timestamp */
+p[style*="font-size: 0.8em"] {
+    color: #757575; /* Medium Gray - !important REMOVED */
+}
+/* Icons */
+button[aria-label*="Like post"] { color: #757575 !important; }
+button[aria-label*="Unlike post"] { color: #FF6B6B !important; } /* Soft Red */
+button[aria-label*="comments"] { color: #757575 !important; }
+button[aria-label*="Share post"] { color: #A6D1E6 !important; } /* Light Cool Blue */
+
+/* Comment Section Styles */
+.comment-section h4 { color: #BDBDBD !important; }
+.comment-section p { color: #E0E0E0 !important; }
+.comment-section p[style*="font-weight: bold"] { color: #A6D1E6 !important; } /* Author */
+.comment-section p[style*="font-size: 0.8em"] { color: #757575 !important; } /* Timestamp */
+.comment-section button[aria-label*="Delete comment"] { color: #757575 !important; }
+
+/* --- Ensure correct base input color (needed if not covered by :root) --- */
+/* Base input styles (excluding the white textareas) */
+input {
+  color: #FFFFFF !important; /* White Text Default */
+  background-color: #2C2C2C !important; /* Standard Dark Gray */
+  border: 1px solid #4A4A4A !important; /* Medium Warm Gray */
+}
+
+/* --- Fix for Rates Page --- */
+h4[style*="color: #8AFF8A"] {
+  color: #A6D1E6 !important; /* Change "Recipient Gets" to Light Cool Blue */
+}

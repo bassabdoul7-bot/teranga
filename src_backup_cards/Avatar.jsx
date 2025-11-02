@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { FaUserCircle } from 'react-icons/fa'; // Placeholder icon
 
@@ -66,7 +66,7 @@ export default function Avatar({ url, size, onUpload, userId }) {
         <FaUserCircle style={{ fontSize: size, color: '#4A4A4A' }} />
       )}
 
-      {}
+      {/* Upload Button/Label (Only show if onUpload function is provided) */}
       {onUpload && (
         <div>
           <label 
@@ -89,7 +89,3 @@ export default function Avatar({ url, size, onUpload, userId }) {
     </div>
   );
 }
-
-
-
-

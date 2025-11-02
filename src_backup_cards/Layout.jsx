@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { supabase } from './supabaseClient'; 
 import { FaUsers, FaDollarSign, FaRegCalendarAlt, FaUserCircle, FaComments } from 'react-icons/fa'; 
@@ -58,7 +58,7 @@ export default function Layout({ setSession }) {
           <FaComments style={iconStyle} />
           Chat
         </Link>
-        {}
+        {/* UPDATED LINK */}
         <Link to="/resources" style={linkStyle('/resources')}> 
           <FaRegCalendarAlt style={iconStyle} /> 
           Resources 
@@ -71,7 +71,3 @@ export default function Layout({ setSession }) {
     </div>
   );
 }
-
-
-
-

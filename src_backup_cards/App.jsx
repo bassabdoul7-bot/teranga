@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'; 
 import { supabase } from './supabaseClient';
 import { Auth } from '@supabase/auth-ui-react';
@@ -46,13 +46,13 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {}
+        {/* If NO session, show Auth */}
         {!session ? (
           <>
             <Route path="/auth" element={ 
               <div style={{ maxWidth: '420px', margin: '50px auto' }}> 
-                <div style={{ backgroundColor: '#1E1E1E', padding: '25px' }}>
-                  <h2 style={{ textAlign: 'center', marginBottom: '25px', color: '#FFFFFF' }}>Welcome to TerangaHub ?</h2> 
+                <div style={{ backgroundColor: '#1E1E1E', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
+                  <h2 style={{ textAlign: 'center', marginBottom: '25px', color: '#FFFFFF' }}>Welcome to TerangaHub ✨</h2> 
                   <Auth 
                     supabaseClient={supabase} 
                     appearance={{ theme: ThemeSupa }} 
@@ -65,7 +65,7 @@ function App() {
             <Route path="*" element={<Navigate to="/auth" replace />} /> 
           </>
         ) : (
-          
+          /* If session EXISTS, render Layout and nested routes */
           <Route path="/" element={<Layout setSession={setSession} />}> 
             <Route index element={<Navigate to="/feed" replace />} /> 
             <Route path="feed" element={<Feed session={session} />} /> 
@@ -73,10 +73,10 @@ function App() {
             <Route path="chat" element={<ChatList session={session} />} /> 
             <Route path="chat/:conversationId" element={<ChatRoom session={session} />} /> 
             
-            {}
-            <Route path="resources" element={<Resources />} /> {}
-            <Route path="directory" element={<Directory session={session} />} /> {}
-            <Route path="events" element={<Events session={session} />} /> {}
+            {/* UPDATED RESOURCES ROUTES */}
+            <Route path="resources" element={<Resources />} /> {/* Main Hub */}
+            <Route path="directory" element={<Directory session={session} />} /> {/* Specific Page */}
+            <Route path="events" element={<Events session={session} />} /> {/* Specific Page */}
 
             <Route path="profile/:userId?" element={<Profile session={session} setSession={setSession} />} /> 
             <Route path="*" element={<Navigate to="/feed" replace />} /> 
@@ -88,7 +88,3 @@ function App() {
 }
 
 export default App;
-
-
-
-

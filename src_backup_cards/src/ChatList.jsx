@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { Link } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa'; // Placeholder icon
@@ -37,7 +37,7 @@ function ConversationRow({ conversation, currentUserId }) {
                 )}
                 <div>
                     <p style={{ margin: 0, fontWeight: 'bold', color: '#E0E0E0' }}>{displayName}</p>
-                    {}
+                    {/* We can add 'last message' preview here later */}
                     <p style={{ margin: '3px 0 0 0', fontSize: '0.9em', color: '#A0AEC0' }}>Click to view messages...</p>
                 </div>
             </div>
@@ -109,12 +109,12 @@ export default function ChatList({ session }) {
 
     return (
         <div style={{ maxWidth: '600px', margin: '0 auto', padding: '15px' }}>
-            {}
+            {/* Header */}
             <header style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px', paddingBottom: '10px', borderBottom: '1px solid #4A4A4A' }}>
                 <h1 style={{ color: '#E0E0E0', margin: 0, fontSize: '1.5em' }}>My Messages</h1>
             </header>
             
-            {}
+            {/* Conversation List */}
             <div>
                 {loading ? (
                     <p style={{ color: '#A0AEC0', textAlign: 'center' }}>Loading conversations...</p>
@@ -133,7 +133,3 @@ export default function ChatList({ session }) {
         </div>
     );
 }
-
-
-
-

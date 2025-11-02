@@ -7,8 +7,10 @@ import { FaStore, FaGlobe, FaPhone, FaMapMarkerAlt, FaBuilding, FaUser } from 'r
 function BusinessCard({ business }) {
     const cardStyle = {
         backgroundColor: '#1E1E1E',
+        borderRadius: '12px',
         padding: '20px',
         marginBottom: '20px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
     };
     const titleStyle = {
         color: '#39FF14', // Neon Green
@@ -46,8 +48,10 @@ function BusinessCard({ business }) {
                     <FaGlobe /> {business.website}
                 </a>
             )}
-            {}
-            {}
+            {/* Optional: Link to the owner's profile page */}
+            {/* <Link to={/profile/} style={{...linkStyle, marginTop: '10px'}}>
+                <FaUser /> View Owner Profile
+            </Link> */}
         </div>
     );
 }
@@ -80,7 +84,7 @@ export default function Directory() {
     return (
         <div style={{ maxWidth: '600px', margin: '30px auto', padding: '15px' }}>
             
-            {}
+            {/* Header Area */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '25px' }}>
                 <Link to="/resources" className="btn btn-muted" style={{ width: 'auto', padding: '8px 12px', marginRight: 'auto' }}>
                      Back to Resources
@@ -88,21 +92,21 @@ export default function Directory() {
                 <h2 style={{ margin: '0 auto 0 auto', color: '#FFFFFF', textAlign: 'center' }}>
                     Community Directory
                 </h2>
-                <div style={{width: '120px'}}></div> {}
+                <div style={{width: '120px'}}></div> {/* Spacer */}
             </div>
 
-            {}
-            <div style={{ marginBottom: '25px', padding: '20px', backgroundColor: '#1E1E1E', textAlign: 'center' }}>
+            {/* --- NEW: Add Business Button Card --- */}
+            <div style={{ marginBottom: '25px', padding: '20px', backgroundColor: '#1E1E1E', borderRadius: '12px', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
                 <p style={{ color: '#E0E0E0', margin: '0 0 15px 0', fontSize: '1.1em' }}>Do you own a business?</p>
                 <p style={{ color: '#BDBDBD', margin: '0 0 20px 0', fontSize: '0.9em' }}>List it here for the whole community to see!</p>
                 <Link to="/profile" className="btn btn-primary" style={{ textDecoration: 'none' }}>
                     Register My Business
                 </Link>
             </div>
-            {}
+            {/* --- END NEW BUTTON --- */}
 
 
-            {}
+            {/* Business List */}
             <div>
                 {loading ? (
                     <p style={{ textAlign: 'center', color: '#BDBDBD' }}>Loading businesses...</p>
@@ -121,8 +125,3 @@ export default function Directory() {
         </div>
     );
 }
-
-
-
-
-

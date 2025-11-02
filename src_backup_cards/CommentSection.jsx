@@ -1,0 +1,334 @@
+﻿import { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient';
+import { formatDistanceToNow } from 'date-fns';
+import { FaTrash, FaUserCircle, FaPencilAlt, FaReply } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+
+// --- Component to add a new comment (now handles replies) ---
+function AddComment({ postId, userId, parentId = null, onCommentAdded, onCancel }) {
+    const [content, setContent] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!content.trim()) return;
+        setLoading(true);
+        
+        const { error } = await supabase.from('comments').insert({
+            post_id: postId,
+            user_id: userId,
+            content: content.trim(),
+            parent_id: parentId // This is the new part!
+        });
+        
+        setLoading(false);
+        if (error) {
+            alert('Error: ' + error.message);
+        } else {
+            setContent('');
+            onCommentAdded(); // Refresh the whole comment section
+            if (onCancel) onCancel(); // Close the reply form
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} style={{ marginTop: '15px' }}>
+            <textarea
+                placeholder="Write a comment..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows="2"
+                disabled={loading}
+                style={{ width: '100%', padding: '8px', boxSizing: 'border-box', marginBottom: '8px', borderRadius: '6px', border: '1px solid #BDBDBD', resize: 'vertical', backgroundColor: '#FFFFFF', color: '#121212' }}
+            />
+            <div style={{ display: 'flex', gap: '10px' }}>
+                <button type="submit" disabled={loading || !content.trim()} className="btn btn-secondary" style={{ width: 'auto', padding: '8px 15px', fontSize: '0.9em' }}>
+                    {loading ? 'Posting...' : 'Post Comment'}
+                </button>
+                {/* Show Cancel button only if it's a reply form */}
+                {parentId && (
+                    <button type="button" onClick={onCancel} className="btn btn-muted" style={{ width: 'auto', padding: '8px 15px', fontSize: '0.9em' }}>
+                        Cancel
+                    </button>
+                )}
+            </div>
+        </form>
+    );
+}
+
+
+// --- Component to display a single comment (with Edit/Reply) ---
+function Comment({ comment, profiles, currentUserId, onCommentChange, onReplyClick }) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editLoading, setEditLoading] = useState(false);
+    const [editingContent, setEditingContent] = useState(comment.content);
+    
+    const authorProfile = profiles[comment.user_id];
+    const username = authorProfile ? authorProfile.username || authorProfile.full_name : 'Unknown User';
+    const avatarUrl = authorProfile ? authorProfile.avatar_url : null;
+    const isOwnComment = comment.user_id === currentUserId;
+
+    let timeAgo = '';
+    try {
+        const dateToFormat = comment.updated_at ? new Date(comment.updated_at) : new Date(comment.created_at);
+        timeAgo = formatDistanceToNow(dateToFormat, { addSuffix: true });
+        timeAgo = timeAgo.replace('about ', '');
+        if (comment.updated_at) {
+            timeAgo += ' (edited)';
+        }
+    } catch (e) {
+        timeAgo = 'just now';
+    }
+
+    const handleDelete = async () => {
+        if (window.confirm('Are you sure you want to delete this comment? All replies will also be deleted.')) {
+            const { error } = await supabase.from('comments').delete().eq('id', comment.id);
+            if (error) {
+                alert('Error deleting comment: ' + error.message);
+            } else {
+                onCommentChange(); // Notify parent to refresh
+            }
+        }
+    };
+
+    const handleEditSave = async () => {
+        setEditLoading(true);
+        const { error } = await supabase
+            .from('comments')
+            .update({ content: editingContent, updated_at: new Date() })
+            .eq('id', comment.id);
+        
+        setEditLoading(false);
+        if (error) {
+            alert('Error updating comment: ' + error.message);
+        } else {
+            setIsEditing(false);
+            onCommentChange(); // Refresh
+        }
+    };
+
+    // --- STYLE CHANGE HERE: Removed borderBottom, changed background ---
+    return (
+        <div style={{ display: 'flex', gap: '10px' }}>
+            <Link to={`/profile/${comment.user_id}`} style={{ flexShrink: 0, marginTop: '5px' }}>
+                {avatarUrl ? (
+                    <img src={avatarUrl} alt={username} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                    <FaUserCircle style={{ fontSize: '32px', color: '#4A4A4A' }} />
+                )}
+            </Link>
+
+            <div style={{ flexGrow: 1, backgroundColor: '#4A4A4A', padding: '10px', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                        <Link to={`/profile/${comment.user_id}`} style={{ textDecoration: 'none' }}>
+                            <p style={{ fontWeight: 'bold', margin: 0, fontSize: '0.9em', color: '#A6D1E6' }}>{username}</p>
+                        </Link>
+                        <p style={{ margin: 0, fontSize: '0.8em', color: '#BDBDBD' }}>{timeAgo}</p>
+                    </div>
+                </div>
+                
+                {isEditing ? (
+                    <div style={{ marginTop: '5px' }}>
+                        <textarea
+                            value={editingContent}
+                            onChange={(e) => setEditingContent(e.target.value)}
+                            rows="2"
+                            style={{ width: '100%', padding: '8px', boxSizing: 'border-box', borderRadius: '6px', border: '1px solid #BDBDBD', resize: 'vertical', backgroundColor: '#FFFFFF', color: '#121212' }}
+                            disabled={editLoading}
+                        />
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
+                            <button onClick={handleEditSave} className="btn btn-secondary" style={{ width: 'auto', padding: '5px 10px', fontSize: '0.8em' }} disabled={editLoading}>
+                                {editLoading ? 'Saving...' : 'Save'}
+                            </button>
+                            <button onClick={() => setIsEditing(false)} className="btn btn-muted" style={{ width: 'auto', padding: '5px 10px', fontSize: '0.8em' }} disabled={editLoading}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <p style={{ margin: '5px 0 0 0', color: '#E0E0E0', textAlign: 'left', wordWrap: 'break-word' }}>{comment.content}</p>
+                )}
+
+                <div style={{ display: 'flex', gap: '15px', marginTop: '8px' }}>
+                    <button
+                        onClick={() => onReplyClick(comment.id)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#BDBDBD', fontSize: '0.8em', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
+                        aria-label="Reply to comment"
+                    >
+                        <FaReply /> Reply
+                    </button>
+                    {isOwnComment && (
+                        <>
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#BDBDBD', fontSize: '0.8em', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
+                                aria-label="Edit comment"
+                            >
+                                <FaPencilAlt /> Edit
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#BDBDBD', fontSize: '0.8em', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
+                                aria-label="Delete comment"
+                            >
+                                <FaTrash /> Delete
+                            </button>
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// --- NEW: Recursive component to render a comment and its replies ---
+function CommentThread({ comment, profiles, currentUserId, onCommentChange, replyingToId, setReplyingToId }) {
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Comment
+                comment={comment}
+                profiles={profiles}
+                currentUserId={currentUserId}
+                onCommentChange={onCommentChange}
+                onReplyClick={() => setReplyingToId(replyingToId === comment.id ? null : comment.id)} // Toggle reply form
+            />
+            
+            {/* The Reply Form */}
+            {replyingToId === comment.id && (
+                <div style={{ marginLeft: '42px' }}>
+                    <AddComment
+                        postId={comment.post_id}
+                        userId={currentUserId}
+                        parentId={comment.id}
+                        onCommentAdded={onCommentChange}
+                        onCancel={() => setReplyingToId(null)}
+                    />
+                </div>
+            )}
+
+            {/* The Replies */}
+            {comment.replies && comment.replies.length > 0 && (
+                <div style={{ marginLeft: '20px', paddingLeft: '22px', borderLeft: '2px solid #4A4A4A', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {comment.replies.map(reply => (
+                        <CommentThread
+                            key={reply.id}
+                            comment={reply}
+                            profiles={profiles}
+                            currentUserId={currentUserId}
+                            onCommentChange={onCommentChange}
+                            replyingToId={replyingToId}
+                            setReplyingToId={setReplyingToId}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+// --- Main Comment Section Component (REWRITTEN) ---
+export default function CommentSection({ postId, userId, onCommentChange, onClose }) {
+    const [comments, setComments] = useState([]);
+    const [profiles, setProfiles] = useState({}); // Use an object for quick lookup
+    const [loading, setLoading] = useState(true);
+    const [refreshToggle, setRefreshToggle] = useState(0);
+    const [replyingToId, setReplyingToId] = useState(null); // State moved here
+
+    async function fetchCommentsAndNest() {
+        setLoading(true);
+        setReplyingToId(null); // Close reply forms on refresh
+
+        // 1. Fetch all comments for the post
+        const { data: commentsData, error: commentsError } = await supabase
+            .from('comments')
+            .select('*, updated_at')
+            .eq('post_id', postId)
+            .order('created_at', { ascending: true });
+        
+        if (commentsError) { console.error('Err fetch comments:', commentsError); setLoading(false); return; }
+        if (!commentsData || commentsData.length === 0) {
+            setComments([]);
+            setProfiles({});
+            setLoading(false);
+            return;
+        }
+
+        // 2. Fetch all profiles for those comments
+        const userIds = [...new Set(commentsData.map(comment => comment.user_id))];
+        if (userIds.length > 0) {
+            const { data: profilesData, error: profilesError } = await supabase.from('profiles').select('id, username, full_name, avatar_url').in('id', userIds);
+            if (profilesError) {
+                console.error('Err fetch comment profiles:', profilesError);
+            }
+            // Convert profiles array to an object for fast lookup
+            const profilesMap = (profilesData || []).reduce((acc, profile) => {
+                acc[profile.id] = profile;
+                return acc;
+            }, {});
+            setProfiles(profilesMap);
+        } else {
+            setProfiles({});
+        }
+
+        // 3. Nest the comments (This is the critical logic)
+        const commentsById = new Map();
+        const topLevelComments = [];
+        
+        commentsData.forEach(comment => {
+            commentsById.set(comment.id, { ...comment, replies: [] });
+        });
+
+        commentsData.forEach(comment => {
+            if (comment.parent_id && commentsById.has(comment.parent_id)) {
+                commentsById.get(comment.parent_id).replies.push(commentsById.get(comment.id));
+            } else {
+                topLevelComments.push(commentsById.get(comment.id));
+            }
+        });
+
+        setComments(topLevelComments);
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        fetchCommentsAndNest();
+    }, [postId, refreshToggle]);
+
+    const handleCommentChange = () => {
+        setRefreshToggle(prev => prev + 1); // Trigger a full re-fetch and re-nest
+        if (onCommentChange) onCommentChange(); // Update the count on the post
+    };
+
+    return (
+        <div style={{ marginTop: '10px', paddingTop: '10px' }}>
+            {/* Main "Add Comment" form (for top-level comments) */}
+            <AddComment
+                postId={postId}
+                userId={userId}
+                onCommentAdded={handleCommentChange}
+                onCancel={onClose} // Use the onClose prop to hide the whole section
+            />
+
+            <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {loading ? (
+                    <p style={{ color: '#A0AEC0' }}>Loading comments...</p>
+                ) : comments.length === 0 ? (
+                    <p style={{ color: '#A0AEC0', fontSize: '0.9em', fontStyle: 'italic', textAlign: 'center' }}>No comments yet.</p>
+                ) : (
+                    comments.map(comment => (
+                        <CommentThread
+                            key={comment.id}
+                            comment={comment}
+                            profiles={profiles}
+                            currentUserId={userId}
+                            onCommentChange={handleCommentChange}
+                            replyingToId={replyingToId}
+                            setReplyingToId={setReplyingToId}
+                        />
+                    ))
+                )}
+            </div>
+        </div>
+    );
+}
