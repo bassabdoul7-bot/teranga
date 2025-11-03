@@ -12,10 +12,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- NEW: Deep Blue/Teal Gradient --- */
+/* --- NEW: Professional SaaS Gradient --- */
 body {
-  /* New Gradient Background */
-  background: radial-gradient(ellipse at center, #1a3a4a 0%, #121a2a 100%);
+  /* New Gradient with Top Glow */
+  background:
+    radial-gradient(ellipse at top center, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 35%),
+    linear-gradient(to bottom, #0A0A0F, #001B3D);
   background-attachment: fixed; /* Stops gradient from scrolling */
 
   color: #E0E0E0; /* Light Gray text */
