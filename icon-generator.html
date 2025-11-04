@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<body>
+<h2>Click buttons to download icons</h2>
+<button onclick="createIcon(192)">Download 192x192</button>
+<button onclick="createIcon(512)">Download 512x512</button>
+<canvas id="canvas" style="display:none;"></canvas>
+<script>
+function createIcon(size) {
+  const canvas = document.getElementById('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  
+  // Background - Teranga colors (using your theme)
+  ctx.fillStyle = '#0A0A0F';
+  ctx.fillRect(0, 0, size, size);
+  
+  // Add a circle
+  ctx.beginPath();
+  ctx.arc(size/2, size/2, size/3, 0, 2 * Math.PI);
+  ctx.fillStyle = '#10B981'; // Green accent
+  ctx.fill();
+  
+  // Text "TH"
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold ' + (size/3) + 'px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('TH', size/2, size/2);
+  
+  // Download
+  canvas.toBlob(function(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'pwa-' + size + 'x' + size + '.png';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+</script>
+</body>
+</html>

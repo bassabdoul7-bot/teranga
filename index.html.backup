@@ -11,7 +11,7 @@
     <meta name="description" content="Social network for the Senegalese diaspora" />
     <link rel="manifest" href="/manifest.webmanifest" />
     
-    <!-- iOS Specific Meta Tags - REMOVES BROWSER BAR! -->
+    <!-- iOS Specific Meta Tags - CRITICAL FOR STANDALONE MODE -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="TerangaHub" />
