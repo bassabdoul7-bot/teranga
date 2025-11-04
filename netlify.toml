@@ -1,4 +1,4 @@
-﻿[build]
+[build]
   command = "npm run build"
   publish = "dist"
 
@@ -6,6 +6,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-
-[build.environment]
-  NODE_VERSION = "18"
